@@ -12,6 +12,7 @@ Shader "Voxel/Cutout"
 			Tags { "Queue" = "Transparent" "RenderType" = "TransparentCutout" }
 			Blend SrcAlpha OneMinusSrcAlpha
 			LOD 200
+			Lighting Off
 			Cull off
 			
 			CGPROGRAM

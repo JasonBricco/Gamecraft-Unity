@@ -1,13 +1,28 @@
 ﻿using UnityEngine;
+using System;
 
-public enum ShaderType
+public sealed class ShaderType : IEquatable<ShaderType>
 {
-	Diffuse,
-	AlphaDiffuse,
-	Transparent,
-	TransparentCulled,
-	Fluid,
-	FluidCulled
+	public static readonly ShaderType Diffuse = new ShaderType(2000, 0);
+	public static readonly ShaderType AlphaDiffuse = new ShaderType(2000, 1);
+	public static readonly ShaderType Transparent = new ShaderType(3000, 2);
+	public static readonly ShaderType TransparentCulled = new ShaderType(3000, 3);
+	public static readonly ShaderType Liquid = new ShaderType(3000, 4);
+	public static readonly ShaderType LiquidCulled = new ShaderType(3000, 5);
+
+	public int queue;
+	public int ID;
+
+	public ShaderType(int queue, int ID)
+	{
+		this.queue = queue;
+		this.ID = ID;
+	}
+
+	public bool Equals(ShaderType other)
+	{
+		return this.ID == other.ID;
+	}
 }
 
 public sealed class MaterialManager : ScriptableObject
@@ -38,8 +53,9 @@ public sealed class MaterialManager : ScriptableObject
 		return materials[meshIndex];
 	}
 	
-	public static Shader GetShader(ShaderType type)
+	public static void SetShader(int meshIndex, ShaderType type)
 	{
-		return shaders[(int)type];
+		materials[meshIndex].shader = shaders[type.ID];
+		materials[meshIndex].renderQueue = type.queue;
 	}
 }

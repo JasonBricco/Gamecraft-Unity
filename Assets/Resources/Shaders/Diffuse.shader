@@ -9,7 +9,8 @@ Shader "Voxel/Diffuse"
 	{
 		Pass
 		{
-			Tags { "RenderType" = "Opaque" }
+			Tags  { "Queue" = "Geometry" "RenderType" = "Opaque" }
+			Lighting Off
 			LOD 200
 			
 			CGPROGRAM

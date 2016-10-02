@@ -11,9 +11,10 @@ Shader "Voxel/Liquid Culled"
 	{
 		Pass
 		{
-			Tags { "Queue" = "Transparent" }
+			Tags { "Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
 			Blend SrcAlpha OneMinusSrcAlpha
 			LOD 200
+			Lighting Off
 			
 			CGPROGRAM
 			#pragma vertex vert
@@ -51,7 +52,7 @@ Shader "Voxel/Liquid Culled"
 
 			float4 frag(VertexOut i) : COLOR
 			{
-				fixed4 col = UNITY_SAMPLE_TEX2DARRAY(_TexArray, i.uv.xyz);
+				half4 col = UNITY_SAMPLE_TEX2DARRAY(_TexArray, i.uv.xyz);
 
 				float3 light = i.col.rgb;
 				float sun = i.col.a;
@@ -60,7 +61,7 @@ Shader "Voxel/Liquid Culled"
 				amb = max(amb, 0.0666);
 	      		amb = max(amb, light);
 
-	      		return float4(col.xyz * amb, 1.0);
+	      		return float4(col.xyz * amb, _Alpha);
 			}
 			
 			ENDCG

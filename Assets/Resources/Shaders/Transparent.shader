@@ -10,9 +10,10 @@ Shader "Voxel/Transparent"
 	{
 		Pass
 		{
-			Tags { "Queue" = "Transparent" }
+			Tags { "Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
 			Blend SrcAlpha OneMinusSrcAlpha
 			LOD 200
+			Lighting Off
 			Cull off
 			
 			CGPROGRAM

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Fluid : Block 
 {
-	private ShaderType currentShader = ShaderType.FluidCulled;
+	private ShaderType currentShader;
 
 	public Fluid()
 	{
@@ -10,6 +10,7 @@ public class Fluid : Block
 		fluid = true;
 		meshIndex = 1;
 		transparent = true;
+		SetShader(ShaderType.LiquidCulled);
 	}
 
 	public override void Build(int x, int y, int z, MeshData data)
@@ -22,7 +23,7 @@ public class Fluid : Block
 		if (currentShader == type) return;
 
 		currentShader = type;
-		MaterialManager.GetMaterial(meshIndex).shader = MaterialManager.GetShader(type);
+		MaterialManager.SetShader(meshIndex, type);
 	}
 
 	public override CullType GetCullType(int face)
@@ -35,7 +36,7 @@ public class Fluid : Block
 		if (head)
 		{
 			ScreenFader.SetFade(0.0f, 0.0f, 1.0f, 0.3f);
-			SetShader(ShaderType.Fluid);
+			SetShader(ShaderType.Liquid);
 			PlayerInteraction.DisallowReticle();
 		}
 	}
@@ -45,7 +46,7 @@ public class Fluid : Block
 		if (head)
 		{
 			ScreenFader.SetFade(0.0f, 0.0f, 0.0f, 0.0f);
-			SetShader(ShaderType.FluidCulled);
+			SetShader(ShaderType.LiquidCulled);
 			PlayerInteraction.AllowReticle();
 		}
 	}

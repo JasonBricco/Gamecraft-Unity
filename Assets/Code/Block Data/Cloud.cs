@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class Cloud : Block 
+public sealed class Cloud : Block 
 {
-	private ShaderType currentShader = ShaderType.TransparentCulled;
+	private ShaderType currentShader;
 
 	public Cloud()
 	{
@@ -14,6 +14,7 @@ public class Cloud : Block
 		surface = false;
 		meshIndex = 3;
 		transparent = true;
+		SetShader(ShaderType.TransparentCulled);
 	}
 	
 	private void SetShader(ShaderType type)
@@ -21,7 +22,7 @@ public class Cloud : Block
 		if (currentShader == type) return;
 		
 		currentShader = type;
-		MaterialManager.GetMaterial(meshIndex).shader = MaterialManager.GetShader(type);
+		MaterialManager.SetShader(meshIndex, type);
 	}
 
 	public override CullType GetCullType(int face)

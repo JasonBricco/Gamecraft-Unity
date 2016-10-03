@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
-public class CursorControl : ScriptableObject 
+public class CursorControl : ScriptableObject, IUpdatable
 {
-	private Texture2D cursor;
+	private Transform cursor;
 
 	private void Awake()
 	{
+		cursor = UIStore.GetUI<Image>("Cursor").transform;
+
 		EventManager.OnStateChange += (state) => 
 		{
 			if (state == GameState.Paused)
@@ -17,5 +20,13 @@ public class CursorControl : ScriptableObject
 
 			if (state == GameState.Playing) Cursor.lockState = CursorLockMode.Locked;
 		};
+
+		Updater.Register(this);
+	}
+
+	public void UpdateTick()
+	{
+		if (Engine.CurrentState == GameState.Playing)
+			cursor.position = Input.mousePosition;
 	}
 }

@@ -1,4 +1,4 @@
-﻿Shader "Voxel/Outer Fluid" 
+﻿Shader "Voxel/Outer Liquid" 
 {
 	Properties 
 	{
@@ -10,44 +10,66 @@
 	
 	SubShader 
 	{
-		Tags { "Queue" = "Transparent" }
-		Blend SrcAlpha OneMinusSrcAlpha
-		LOD 200
-		Cull off
-		
-		CGPROGRAM
-      	#pragma surface surf Lambert noambient vertex:vert keepalpha exclude_path:deferred exclude_path:prepass noshadow nolightmap nodynlightmap nodirlightmap nometa noforwardadd
-      	
-      	struct Input 
-      	{
-        	float2 uv_MainTex;
-      	};
-      	
-      	sampler2D _MainTex;
-      	float4 _Sun;
-      	float _Alpha;
-      	float _Speed;
-      	
-      	void vert(inout appdata_full v) 
-      	{
-        	v.texcoord.x += _SinTime.y * _Speed;
-      	}
-		
-      	void surf(Input IN, inout SurfaceOutput o) 
-      	{
-      		o.Albedo = tex2D(_MainTex, IN.uv_MainTex).rgb;
-      		o.Alpha = _Alpha;
-      	
-      		float3 light = _Sun.rgb;
-      		float sun = _Sun.a;
-      		float3 ambient = UNITY_LIGHTMODEL_AMBIENT * 2 * sun;
-      		ambient = max(ambient, 0.0666);
-      		ambient = max(ambient, light);
-        	o.Emission = o.Albedo * ambient;
-     	}
-		
-		ENDCG
+		Pass
+		{
+			Tags { "Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
+			Blend SrcAlpha OneMinusSrcAlpha
+			LOD 200
+			Lighting Off
+			
+			CGPROGRAM
+			#pragma vertex vert
+		    #pragma fragment frag
+		    #pragma target 3.5
+
+	      	struct VertexIn
+			{
+				float4 vertex : POSITION;
+				float4 texcoord : TEXCOORD0;
+				float4 col : COLOR;
+			};
+
+			struct VertexOut
+			{
+				float4 pos : SV_POSITION;
+				float4 uv : TEXCOORD0;
+				float4 col : COLOR;
+			};
+	      	
+			sampler2D _MainTex;
+      		float4 _Sun;
+	      	float _Alpha;
+	      	float _Speed;
+
+	      	VertexOut vert(VertexIn v)
+			{
+				VertexOut o;
+
+				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+				o.uv = v.texcoord + _SinTime.y * _Speed; 
+				o.col = v.col;
+
+				return o;
+			}
+
+			float4 frag(VertexOut i) : COLOR
+			{
+				float3 col = tex2D(_MainTex, i.uv).rgb;
+
+				float3 light = _Sun.rgb;
+				float sun = _Sun.a;
+
+				float3 amb = UNITY_LIGHTMODEL_AMBIENT * 2 * sun;
+				amb = max(amb, 0.0666);
+	      		amb = max(amb, light);
+
+	      		return float4(col * amb, _Alpha);
+			}
+			
+			ENDCG
+		}
 	}
 	
 	FallBack "Standard"
 }
+

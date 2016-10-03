@@ -125,6 +125,11 @@ public static class Utils
 		return true;
 	}
 
+	public static int Square(int value)
+	{
+		return value * value;
+	}
+
 	public static int Sign(float val)
 	{
 		return val < 0 ? -1 : 1;

@@ -1,12 +1,5 @@
 using UnityEngine;
 
-public enum ChunkType
-{
-	Normal,
-	Side,
-	Corner
-}
-
 public sealed class GrassyGenerator : TerrainGenerator 
 {
 	private NoiseArray2D terrainNoise, islandNoise;
@@ -23,8 +16,10 @@ public sealed class GrassyGenerator : TerrainGenerator
 		caveNoise3D = new NoiseArray3D(1.0f / 80.0f);
 	}
 
-	public override void Initialize(int worldX, int worldZ, ChunkType type)
+	public override void Initialize(int worldX, int worldZ)
 	{
+		base.Initialize(worldX, worldZ);
+
 		rand = new System.Random(worldX * 10 + worldZ * 1000);
 		terrainNoise.GenerateNoise(worldX, worldZ);
 		islandNoise.GenerateNoise(worldX, worldZ);
@@ -35,7 +30,7 @@ public sealed class GrassyGenerator : TerrainGenerator
 		islandNoise3D.GenerateNoise(worldPos);
 		caveNoise3D.GenerateNoise(worldPos);
 
-		Generate(worldX, worldZ, type);
+		GenerateChunk(worldX, worldZ);
 	}
 
 	protected override void GenerateColumn(int x, int z, int offset)

@@ -16,9 +16,9 @@ public class Controller : MonoBehaviour
 		moveVector = transform.TransformDirection(moveVector);
 		player.ColFlags = controller.Move(moveVector);
 
-		Vector3 playerPos = player.transform.position;
+		Vector3 pos = player.transform.position;
 
-		if (playerPos.y <= 0)
-			player.transform.position = new Vector3(playerPos.x, 130, playerPos.z);
+		if (pos.y < 0.0f || pos.y > 512.0f || pos.x < -50.0f || pos.x > Map.Size + 50.0f || pos.z < -50.0f || pos.z > Map.Size + 50.0f)
+			player.Kill();
 	}
 }

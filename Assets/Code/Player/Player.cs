@@ -17,14 +17,16 @@ public class Player : MonoBehaviour
 
 	private CollisionFlags colFlags;
 
-	private ushort prevLegsBlock;
-	private ushort prevHeadBlock;
-
 	public CollisionFlags ColFlags 
 	{ 
 		get { return colFlags; }
 		set { colFlags = value; }
 	}
+
+	private ushort prevLegsBlock;
+	private ushort prevHeadBlock;
+
+	private Vector3 spawnPoint;
 
 	private void Awake()
 	{
@@ -68,6 +70,11 @@ public class Player : MonoBehaviour
 			}
 		};
 	}
+
+	public void Kill()
+	{
+		transform.position = spawnPoint;
+	}
 	
 	private void Spawn()
 	{
@@ -83,6 +90,7 @@ public class Player : MonoBehaviour
 
 		spawn.y += 0.45f;
 		transform.position = spawn;
+		spawnPoint = spawn;
 	}
 	
 	private Vector3 TryFindLand()

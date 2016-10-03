@@ -66,8 +66,7 @@ public class Map
 		{
 			Vector3i pos = (Vector3i)posObj;
 
-			ChunkType type = GetChunkType(pos.x, pos.z);
-			TerrainGenerator.GetGenerator(generatorID).Initialize(pos.x * Chunk.Size, pos.z * Chunk.Size, type);
+			TerrainGenerator.GetGenerator(generatorID).Initialize(pos.x * Chunk.Size, pos.z * Chunk.Size);
 
 			numCompleted++;
 		}
@@ -77,21 +76,6 @@ public class Map
 			ErrorHandling.LogText("Error while building terrain.", e.Message, e.StackTrace);
 			Engine.SignalQuit();
 		}
-	}
-
-	private static ChunkType GetChunkType(int x, int z)
-	{
-		if (x == 0 || x == WidthChunks - 1)
-		{
-			if (z == 0 || z == WidthChunks - 1)
-				return ChunkType.Corner;
-			else
-				return ChunkType.Side;
-		}
-		else if (z == 0 || z == WidthChunks - 1)
-			return ChunkType.Side;
-		else
-			return ChunkType.Normal;
 	}
 
 	public static float GetProgress(UnityAction callback)

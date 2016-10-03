@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class ParticleCollision : MonoBehaviour 
+public class ParticleController : MonoBehaviour 
 {
 	private ParticleSystem system;
 	private ParticleSystem.Particle[] particles;

@@ -38,7 +38,7 @@ public class MapLight
 		try
 		{
 			Vector3i pos = (Vector3i)posObj;
-			
+
 			SunlightEngine.ComputeRays(pos.x * Chunk.Size, pos.z * Chunk.Size);
 			SunlightEngine.Scatter(pos.x * Chunk.Size, pos.z * Chunk.Size, new Queue<Vector3i>(), new Queue<Vector3i>());
 			numCompleted++;

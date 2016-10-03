@@ -43,11 +43,6 @@ public class TerrainGenerator
 		return val >= min && val <= max;
 	}
 
-	protected int ComputeEdgeFalloff(int x, int z, float height)
-	{
-		return (int)height;
-	}
-
 	public static TerrainGenerator GetGenerator(int ID)
 	{
 		switch (ID)

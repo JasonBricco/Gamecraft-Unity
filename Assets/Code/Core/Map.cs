@@ -8,7 +8,7 @@ public struct AdjacentBlocks
 	public ushort left, right, front, back, top, bottom;
 }
 
-public class Map
+public static class Map
 {
 	public const int Size = 512;
 	public const int Height = 128;
@@ -107,7 +107,6 @@ public class Map
 		
 		return blocks[x + Size * (y + Height * z)];
 	}
-
 
 	public static void SetBlockSafe(int x, int y, int z, ushort block)
 	{

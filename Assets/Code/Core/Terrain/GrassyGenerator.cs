@@ -37,6 +37,7 @@ public sealed class GrassyGenerator : TerrainGenerator
 	{
 		int terrainHeight = Mathf.Max(GetTerrainHeight(x, z) - offset, 1);
 		int islandHeight = Mathf.Max(GetIslandHeight(x, z) - offset, 1);
+
 		bool forest = Voronoi.GetValue(x, z, 0.005, 1.0) <= 0.0;
 
 		for (int y = 0; y < Map.Height; y++) 
@@ -76,13 +77,13 @@ public sealed class GrassyGenerator : TerrainGenerator
 	private int GetTerrainHeight(int x, int z)
 	{
 		float height = terrainNoise.GetNoise(x, z) * 10;
-		return ComputeEdgeFalloff(x, z, height + 20.0f);
+		return (int)(height + 20.0f);
 	}
 
 	private int GetIslandHeight(int x, int z) 
 	{
 		float height = islandNoise.GetNoise(x, z) * 50;
-		return ComputeEdgeFalloff(x, z, height + 20.0f);
+		return (int)(height + 20.0f);
 	}
 
 	private void GenerateBase(int x, int y, int z) 

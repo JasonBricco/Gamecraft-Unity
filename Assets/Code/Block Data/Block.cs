@@ -192,6 +192,7 @@ public class Block
 	
 	public virtual void KillParticle(float y, ref ParticleSystem.Particle particle)
 	{
+		particle.velocity = Vector3.zero;
 		particle.position = new Vector3(particle.position.x, y + 0.5f, particle.position.z);
 		particle.lifetime = 0;
 	}
@@ -202,17 +203,10 @@ public class Block
 		return false;
 	}
 	
-	public virtual void OnEnter(bool head)
-	{
-	}
-	
-	public virtual void OnExit(bool head)
-	{
-	}
+	public virtual void OnEnter(bool head) {}
+	public virtual void OnExit(bool head) {}
 
-	public virtual void OnPlace(Vector3i normal, int x, int y, int z)
-	{
-	}
+	public virtual void OnPlace(Vector3i normal, int x, int y, int z) {}
 	
 	public virtual void OnDelete(int x, int y, int z)
 	{

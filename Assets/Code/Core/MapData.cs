@@ -42,7 +42,7 @@ public class MapData : ScriptableObject
 
 	public static bool Load()
 	{
-		allowSave = false; // TODO: Set to true when crash bug is fixed.
+		allowSave = true;
 
 		if (File.Exists(path))
 		{

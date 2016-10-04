@@ -18,8 +18,6 @@ public class Player : MonoBehaviour, IUpdatable
 
 		collision = new BlockCollision(boxCollider);
 
-		//SetMovementState(MoveState.Standard);
-
 		EventManager.OnGameEvent += (type) =>
 		{
 			switch (type)

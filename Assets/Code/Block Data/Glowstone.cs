@@ -7,6 +7,6 @@ public class Glowstone : Block
 		name = "Glowstone";
 		genericID = BlockType.Glowstone;
 		elements.SetAll(8.0f);
-		lightEmitted = (byte)(LightUtils.MaxLight + 1);
+		lightEmitted = (byte)LightUtils.MaxLight;
 	}
 }

@@ -17,10 +17,8 @@ public class MainMenu : MonoBehaviour
 	{
 		bool dataLoaded = MapData.Load();
 
-		if (dataLoaded)
-			Engine.BeginPlay();
-		else
-			worldTypesWindow.SetActive(true);
+		if (dataLoaded) Engine.BeginPlay();
+		else worldTypesWindow.SetActive(true);
 	}
 
 	public void SetTypeAndBuild(int type)

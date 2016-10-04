@@ -1,27 +1,11 @@
 using UnityEngine;
 using System.Collections;
 
-public enum MoveState { Standard, Flying, Climbing }
-
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IUpdatable
 {
 	[SerializeField] private GameObject boxCollider;
-	private CharacterController charController;
-	
-	private Controller current;
-	private StandardController standardController;
-	private FlyingController flyingController;
-	private ClimbingController climbingController;
 
 	private BlockCollision collision;
-
-	private CollisionFlags colFlags;
-
-	public CollisionFlags ColFlags 
-	{ 
-		get { return colFlags; }
-		set { colFlags = value; }
-	}
 
 	private ushort prevLegsBlock;
 	private ushort prevHeadBlock;
@@ -30,19 +14,11 @@ public class Player : MonoBehaviour
 
 	private void Awake()
 	{
+		Updater.Register(this);
+
 		collision = new BlockCollision(boxCollider);
 
-		charController = GetComponent<CharacterController>();
-		standardController = GetComponent<StandardController>();
-		flyingController = GetComponent<FlyingController>();
-		climbingController = GetComponent<ClimbingController>();
-
-		standardController.Initialize(charController, this);
-		flyingController.Initialize(charController, this);
-		climbingController.Initialize(charController, this);
-
-		current = standardController;
-		SetMovementState(MoveState.Standard);
+		//SetMovementState(MoveState.Standard);
 
 		EventManager.OnGameEvent += (type) =>
 		{
@@ -142,32 +118,10 @@ public class Player : MonoBehaviour
 			return Direction.Left;
 	}
 	
-	private void FixedUpdate()
+	public void UpdateTick()
 	{
 		if (Engine.CurrentState == GameState.Playing)
 			collision.SetColliders(transform.position);
-	}
-	
-	public void SetMovementState(MoveState state)
-	{
-		current.enabled = false;
-
-		switch (state)
-		{
-		case MoveState.Standard:
-			current = standardController;
-			break;
-
-		case MoveState.Flying:
-			current = flyingController;
-			break;
-
-		case MoveState.Climbing:
-			current = climbingController;
-			break;
-		}
-
-		current.enabled = true;
 	}
 
 	public void ProcessBlocksInside(ushort legsBlock, ushort headBlock)
@@ -191,17 +145,5 @@ public class Player : MonoBehaviour
 	public ushort GetSurroundingBlock(int x, int y, int z)
 	{
 		return collision.GetSurroundingBlock(x, y, z);
-	}
-	
-	private void OnControllerColliderHit(ControllerColliderHit hit)
-	{
-		if ((colFlags & CollisionFlags.Sides) != 0)
-		{
-			Vector3i pos = Utils.GetBlockPos(hit.transform.position);
-			ushort block = Map.GetBlockSafe(pos.x, pos.y, pos.z);
-
-			if (BlockRegistry.GetBlock(block).MoveState == MoveState.Climbing)
-				SetMovementState(MoveState.Climbing);
-		}
 	}
 }

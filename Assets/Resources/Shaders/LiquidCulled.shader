@@ -1,4 +1,4 @@
-Shader "Voxel/Liquid Culled" 
+Shader "Voxel/Liquid" 
 {
 	Properties 
 	{
@@ -19,7 +19,10 @@ Shader "Voxel/Liquid Culled"
 			CGPROGRAM
 			#pragma vertex vert
 		    #pragma fragment frag
+		    #pragma multi_compile_fog
 		    #pragma target 3.5
+
+		    #include "UnityCG.cginc"
 
 	      	struct VertexIn
 			{
@@ -33,6 +36,7 @@ Shader "Voxel/Liquid Culled"
 				float4 pos : SV_POSITION;
 				float4 uv : TEXCOORD0;
 				float4 col : COLOR;
+				UNITY_FOG_COORDS(1)
 			};
 	      	
 			UNITY_DECLARE_TEX2DARRAY(_TexArray);
@@ -46,6 +50,8 @@ Shader "Voxel/Liquid Culled"
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 				o.uv = v.texcoord + _SinTime.y * _Speed; 
 				o.col = v.col;
+
+				UNITY_TRANSFER_FOG(o, o.pos);
 
 				return o;
 			}
@@ -61,7 +67,10 @@ Shader "Voxel/Liquid Culled"
 				amb = max(amb, 0.0666);
 	      		amb = max(amb, light);
 
-	      		return float4(col.xyz * amb, _Alpha);
+	      		col.xyz *= amb;
+	      		UNITY_APPLY_FOG(i.fogCoord, col);
+
+	      		return float4(col.xyz, _Alpha);
 			}
 			
 			ENDCG

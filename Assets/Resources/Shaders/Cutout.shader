@@ -18,7 +18,10 @@ Shader "Voxel/Cutout"
 			CGPROGRAM
 			#pragma vertex vert
 		    #pragma fragment frag
+		    #pragma multi_compile_fog
 		    #pragma target 3.5
+
+		    #include "UnityCG.cginc"
 
 			struct VertexIn
 			{
@@ -32,6 +35,7 @@ Shader "Voxel/Cutout"
 				float4 pos : SV_POSITION;
 				float4 uv : TEXCOORD0;
 				float4 col : COLOR;
+				UNITY_FOG_COORDS(1)
 			};
 
 			UNITY_DECLARE_TEX2DARRAY(_TexArray);
@@ -43,6 +47,8 @@ Shader "Voxel/Cutout"
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 				o.uv = v.texcoord; 
 				o.col = v.col;
+
+				UNITY_TRANSFER_FOG(o, o.pos);
 
 				return o;
 			}
@@ -59,7 +65,10 @@ Shader "Voxel/Cutout"
 				amb = max(amb, 0.0666);
 	      		amb = max(amb, light);
 
-	      		return float4(col.xyz * amb, 1.0);
+	      		col.xyz *= amb;
+	      		UNITY_APPLY_FOG(i.fogCoord, col);
+
+	      		return float4(col.xyz, 1.0);
 			}
 			
 			ENDCG

@@ -14,9 +14,9 @@ public class FlatGenerator : TerrainGenerator
 
 		for (int y = 0; y < Map.Height; y++)
 		{
-			if (y < height - 30) Map.SetBlock(x, y, z, BlockType.Stone);
-			else if (y < height) Map.SetBlock(x, y, z, BlockType.Dirt);
-			else if (y == height) Map.SetBlock(x, y, z, BlockType.Grass);
+			if (y < height - 30) Map.SetBlock(x, y, z, new Block(BlockID.Stone));
+			else if (y < height) Map.SetBlock(x, y, z, new Block(BlockID.Dirt));
+			else if (y == height) Map.SetBlock(x, y, z, new Block(BlockID.Grass));
 		}
 	}
 }

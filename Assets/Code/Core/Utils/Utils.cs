@@ -56,9 +56,9 @@ public static class Utils
 			{
 				for (int x = start.x; x <= end.x; x++) 
 				{
-					ushort block = Map.GetBlockSafe(x, y, z);
-					
-					if (BlockRegistry.GetBlock(block).IgnoreRaycast)
+					Block block = Map.GetBlockSafe(x, y, z);
+
+					if (block.IgnoreRaycast())
 						continue;
 					
 					float dist = BlockRayIntersection(new Vector3(x, y, z), ray);

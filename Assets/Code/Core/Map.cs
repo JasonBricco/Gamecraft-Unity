@@ -5,7 +5,7 @@ using System.Threading;
 
 public struct AdjacentBlocks
 {
-	public ushort left, right, front, back, top, bottom;
+	public Block left, right, front, back, top, bottom;
 }
 
 public static class Map
@@ -17,7 +17,7 @@ public static class Map
 
 	private static int generatorID;
 	
-	private static ushort[] blocks = new ushort[Height * Size * Size];
+	private static Block[] blocks = new Block[Height * Size * Size];
 
 	private static int numCompleted;
 	private static int total = WidthChunks * WidthChunks;
@@ -88,69 +88,64 @@ public static class Map
 		return percent;
 	}
 
-	public static ushort GetBlock(int x, int y, int z)
+	public static Block GetBlock(int x, int y, int z)
 	{
 		return blocks[x + Size * (y + Height * z)];
 	}
 
-	public static void SetBlock(int x, int y, int z, ushort block)
+	public static void SetBlock(int x, int y, int z, Block block)
 	{
 		blocks[x + Size * (y + Height * z)] = block;
 	}
 
-	public static ushort GetBlockSafe(int x, int y, int z)
+	public static Block GetBlockSafe(int x, int y, int z)
 	{
-		if (y >= Height) return BlockType.Air;
+		if (y >= Height) return new Block(BlockID.Air);
 		
 		if (!IsInMap(x, y, z))
-			return BlockType.Boundary;
+			return new Block(BlockID.Boundary);
 		
 		return blocks[x + Size * (y + Height * z)];
 	}
 
-	public static void SetBlockSafe(int x, int y, int z, ushort block)
+	public static void SetBlockSafe(int x, int y, int z, Block block)
 	{
 		if (y >= Height || !IsInMap(x, y, z)) return;
 
 		blocks[x + Size * (y + Height * z)] = block;
 	}
 
-	public static ushort GetBlockDirect(int index)
+	public static Block GetBlockDirect(int index)
 	{
 		return blocks[index];
 	}
 
-	public static void SetBlockDirect(int index, ushort block)
+	public static void SetBlockDirect(int index, Block block)
 	{
 		blocks[index] = block;
 	}
 
-	public static void SetBlockAdvanced(int x, int y, int z, ushort ID, Vector3i normal, bool undo)
+	public static void SetBlockAdvanced(int x, int y, int z, Block block, Vector3i normal, bool undo)
 	{
 		if (IsInMap(x, y, z))
 		{
-			BlockInstance prevInstance = new BlockInstance(GetBlock(x, y, z), x, y, z);
-
-			Block block = BlockRegistry.GetBlock(ID);
-
-			ID = block.TryGetNonGenericID(normal, x, y, z);
-			BlockInstance newBlock = new BlockInstance(ID, x, y, z);
+			if (!block.CanPlace(normal, x, y, z))
+				return;
 			
-			if (undo) UndoManager.RegisterAction(prevInstance, newBlock);
+			BlockInstance prevInst = new BlockInstance(GetBlock(x, y, z), x, y, z);
+			BlockInstance newBlock = new BlockInstance(block, x, y, z);
 
-			SetBlock(x, y, z, ID);
-
-			if (ID == BlockType.Air)
+			if (block.ID == BlockID.Air)
 			{
-				Block prevBlock = BlockRegistry.GetBlock(prevInstance.ID);
+				if (!prevInst.block.CanDelete())
+					return;
 
-				if (!prevBlock.CanDelete)
-					SetBlock(x, y, z, prevInstance.ID);
-				else
-					BlockRegistry.GetBlock(prevInstance.ID).OnDelete(x, y, z);
+				prevInst.block.OnDelete(x, y, z);
 			}
-			else
-				block.OnPlace(normal, x, y, z);
+			else block.OnPlace(normal, x, y, z);
+
+			if (undo) UndoManager.RegisterAction(prevInst, newBlock);
+			SetBlock(x, y, z, block);
 			
 			MapLight.RecomputeLighting(x, y, z);
 		
@@ -165,22 +160,29 @@ public static class Map
 		
 		for (int i = 0; i < blocks.Count; i++)
 		{
-			int x = blocks[i].x;
-			int y = blocks[i].y;
-			int z = blocks[i].z;
+			BlockInstance blockInst = blocks[i];
+
+			int x = blockInst.x;
+			int y = blockInst.y;
+			int z = blockInst.z;
 			
 			if (!IsInMap(x, y, z)) continue;
 
-			BlockInstance prevBlock = new BlockInstance(GetBlock(x, y, z), x, y, z);
+			if (!blockInst.block.CanPlace(Vector3i.zero, x, y, z))
+				continue;
 
-			if (blocks[i].ID == BlockType.Air)
-				BlockRegistry.GetBlock(prevBlock.ID).OnDelete(x, y, z);
-			else
-				BlockRegistry.GetBlock(blocks[i].ID).OnPlace(Vector3i.zero, x, y, z);
-			
+			BlockInstance prevInst = new BlockInstance(GetBlock(x, y, z), x, y, z);
+
+			if (blockInst.block.ID == BlockID.Air)
+			{
+				if (!prevInst.block.CanDelete())
+					continue;
+				else prevInst.block.OnDelete(x, y, z);
+			} else blockInst.block.OnPlace(Vector3i.zero, x, y, z);
+
 			if (undo) prevBlocks.Add(new BlockInstance(GetBlock(x, y, z), x, y, z));
 			
-			SetBlock(x, y, z, blocks[i].ID);
+			SetBlock(x, y, z, blocks[i].block);
 			
 			MapLight.RecomputeLighting(x, y, z);
 			ChunkManager.FlagChunkForUpdate(x, z);
@@ -209,9 +211,9 @@ public static class Map
 	{
 		for (int y = Map.Height - 1; y >= 0; y--)
 		{
-			ushort block = GetBlock(x, y, z);
+			Block block = GetBlock(x, y, z);
 			
-			if (BlockRegistry.GetBlock(block).IsSurface)
+			if (block.IsSurface())
 				return y;
 		}
 		

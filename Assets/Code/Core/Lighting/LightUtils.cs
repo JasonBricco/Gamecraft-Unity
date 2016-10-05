@@ -9,11 +9,6 @@ public static class LightUtils
 	// Look up table for light values. This is computed by normalizing the value range [1, 15] to [0, 1], taking the square
 	// root, and then taking the value to the 2.2 power. 
 	public static readonly byte[] lightOutput = { 0, 20, 65, 93, 114, 131, 147, 161, 174, 186, 197, 208, 218, 228, 237, 246 };
-
-	public static int GetLightStep(ushort block) 
-	{
-		return block == 0 ? 1 : 2;
-	}
 		
 	public static Color32 GetBlockLight(Vector3i pos)
 	{

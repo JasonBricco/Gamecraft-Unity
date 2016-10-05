@@ -7,8 +7,8 @@ public class Player : MonoBehaviour, IUpdatable
 
 	private BlockCollision collision;
 
-	private ushort prevLegsBlock;
-	private ushort prevHeadBlock;
+	private Block prevLegsBlock;
+	private Block prevHeadBlock;
 
 	private Vector3 spawnPoint;
 
@@ -77,9 +77,9 @@ public class Player : MonoBehaviour, IUpdatable
 			for (int z = center.z - 20; z <= center.z + 20; z++)
 			{
 				int height = MapLight.GetRaySafe(x, z);
-				ushort surface = Map.GetBlockSafe(x, height - 1, z);
+				Block surface = Map.GetBlockSafe(x, height - 1, z);
 				
-				if (!BlockRegistry.GetBlock(surface).IsFluid)
+				if (!surface.IsFluid())
 				{
 					Vector3i current = new Vector3i(x, height, z);
 
@@ -122,25 +122,25 @@ public class Player : MonoBehaviour, IUpdatable
 			collision.SetColliders(transform.position);
 	}
 
-	public void ProcessBlocksInside(ushort legsBlock, ushort headBlock)
+	public void ProcessBlocksInside(Block legsBlock, Block headBlock)
 	{
-		if (legsBlock != prevLegsBlock)
+		if (legsBlock.ID != prevLegsBlock.ID)
 		{
-			BlockRegistry.GetBlock(prevLegsBlock).OnExit(false);
-			BlockRegistry.GetBlock(legsBlock).OnEnter(false);
+			prevLegsBlock.OnExit(false);
+			legsBlock.OnEnter(false);
 		}
 
-		if (headBlock != prevHeadBlock)
+		if (headBlock.ID != prevHeadBlock.ID)
 		{
-			BlockRegistry.GetBlock(prevHeadBlock).OnExit(true);
-			BlockRegistry.GetBlock(headBlock).OnEnter(true);
+			prevHeadBlock.OnExit(true);
+			headBlock.OnEnter(true);
 		}
 
 		prevLegsBlock = legsBlock;
 		prevHeadBlock = headBlock;
 	}
 	
-	public ushort GetSurroundingBlock(int x, int y, int z)
+	public Block GetSurroundingBlock(int x, int y, int z)
 	{
 		return collision.GetSurroundingBlock(x, y, z);
 	}

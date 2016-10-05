@@ -59,10 +59,10 @@ public sealed class Chunk
 				{
 					for (int z = wZ; z < wZ + Chunk.Size; z++) 
 					{
-						ushort block = Map.GetBlock(x, y, z);
-						
-						if (block != 0)
-							BlockRegistry.GetBlock(block).Build(x, y, z, meshData);
+						Block block = Map.GetBlock(x, y, z);
+
+						if (block.ID != BlockID.Air)
+							block.Build(x, y, z, meshData);
 					}
 				}
 			}

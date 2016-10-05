@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Direction
+public static class Direction
 {
 	public const int None = -1;
 	public const int Left = 0;
@@ -52,6 +52,16 @@ public class Direction
 		if (a == Back) return b == Front;
 
 		return false;
+	}
+
+	public static int GetOpposite(int dir)
+	{
+		if (dir == Left) return Direction.Right;
+		if (dir == Right) return Direction.Left;
+		if (dir == Front) return Direction.Back;
+		if (dir == Back) return Direction.Front;
+
+		return Direction.None;
 	}
 
 	public static string GetString(int dir)

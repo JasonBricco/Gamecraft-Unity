@@ -1,12 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class BlockLightEngine 
+public sealed class BlockLightEngine 
 {
 	public static void Recompute(Vector3i pos, Queue<Vector3i> nodes) 
 	{
 		byte oldLight = MapLight.GetLight(pos.x, pos.y, pos.z);
-		byte light = BlockRegistry.GetBlock(Map.GetBlock(pos.x, pos.y, pos.z)).LightEmitted;
+		byte light = Map.GetBlock(pos.x, pos.y, pos.z).LightEmitted();
 		
 		if (oldLight > light)
 			Remove(pos, nodes);
@@ -46,9 +46,9 @@ public class BlockLightEngine
 			Vector3i pos = nodes.Dequeue();
 
 			if (pos.y < 0 || pos.y >= Map.Height) continue;
-			
-			ushort block = Map.GetBlock(pos.x, pos.y, pos.z);
-			int light = MapLight.GetLight(pos.x, pos.y, pos.z) - LightUtils.GetLightStep(block);
+
+			Block block = Map.GetBlock(pos.x, pos.y, pos.z);
+			int light = MapLight.GetLight(pos.x, pos.y, pos.z) - block.GetLightStep();
 			
 			if (light <= LightUtils.MinLight) continue;
 			
@@ -60,7 +60,7 @@ public class BlockLightEngine
 				{
 					block = Map.GetBlock(nextPos.x, nextPos.y, nextPos.z);
 				
-					if (BlockRegistry.GetBlock(block).IsTransparent && SetMax((byte)light, nextPos.x, nextPos.y, nextPos.z))
+					if (block.IsTransparent() && SetMax((byte)light, nextPos.x, nextPos.y, nextPos.z))
 						nodes.Enqueue(nextPos);
 				
 					if (!generator) ChunkManager.FlagChunkForUpdate(nextPos.x, nextPos.z);
@@ -97,11 +97,9 @@ public class BlockLightEngine
 
 				if (Map.IsInMap(nextPos.x, nextPos.z))
 				{
-					ushort ID = Map.GetBlock(nextPos.x, nextPos.y, nextPos.z);
+					Block block = Map.GetBlock(nextPos.x, nextPos.y, nextPos.z);
 
-					Block block = BlockRegistry.GetBlock(ID);
-
-					if (block.IsTransparent) 
+					if (block.IsTransparent()) 
 					{
 						if (MapLight.GetLight(nextPos.x, nextPos.y, nextPos.z) <= light)
 							nodes.Enqueue(nextPos);
@@ -109,7 +107,7 @@ public class BlockLightEngine
 							newLights.Enqueue(nextPos);
 					}
 					
-					if (block.LightEmitted > LightUtils.MinLight)
+					if (block.LightEmitted() > LightUtils.MinLight)
 						newLights.Enqueue(nextPos);
 					
 					ChunkManager.FlagChunkForUpdate(nextPos.x, nextPos.z);

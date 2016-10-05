@@ -1,8 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class WallGenerator : StructureGenerator 
+public sealed class WallGenerator : StructureGenerator 
 {
+	private readonly Block stone = new Block(BlockID.Stone);
+
 	public override void Generate(HitInfo info)
 	{
 		List<BlockInstance> blocks = new List<BlockInstance>();
@@ -40,7 +42,7 @@ public class WallGenerator : StructureGenerator
 		for (int x = startX; x < startX + 10; x++)
 		{
 			for (int y = startY; y < startY + 5; y++)
-				blocks.Add(new BlockInstance(BlockType.Stone, x, y, startZ));
+				blocks.Add(new BlockInstance(stone, x, y, startZ));
 		}
 	}
 
@@ -49,7 +51,7 @@ public class WallGenerator : StructureGenerator
 		for (int x = startX - 9; x <= startX; x++)
 		{
 			for (int y = startY; y < startY + 5; y++)
-				blocks.Add(new BlockInstance(BlockType.Stone, x, y, startZ));
+				blocks.Add(new BlockInstance(stone, x, y, startZ));
 		}
 	}
 
@@ -58,7 +60,7 @@ public class WallGenerator : StructureGenerator
 		for (int z = startZ; z < startZ + 10; z++)
 		{
 			for (int y = startY; y < startY + 5; y++)
-				blocks.Add(new BlockInstance(BlockType.Stone, startX, y, z));
+				blocks.Add(new BlockInstance(stone, startX, y, z));
 		}
 	}
 
@@ -67,7 +69,7 @@ public class WallGenerator : StructureGenerator
 		for (int z = startZ - 9; z <= startZ; z++)
 		{
 			for (int y = startY; y < startY + 5; y++)
-				blocks.Add(new BlockInstance(BlockType.Stone, startX, y, z));
+				blocks.Add(new BlockInstance(stone, startX, y, z));
 		}
 	}
 }

@@ -42,7 +42,7 @@ public sealed class GrassyGenerator : TerrainGenerator
 
 		for (int y = 0; y < Map.Height; y++) 
 		{
-			if (y <= Map.SeaLevel) Map.SetBlock(x, y, z, BlockType.Water5);
+			if (y <= Map.SeaLevel) Map.SetBlock(x, y, z, new Block(BlockID.Water, FluidSimulator.MaxFluidLevel));
 			
 			if (y <= terrainHeight) 
 			{
@@ -66,10 +66,10 @@ public sealed class GrassyGenerator : TerrainGenerator
 		}
 		else
 		{
-			if (Map.GetBlock(x, islandHeight, z) == BlockType.Grass && !BlockRegistry.GetBlock(Map.GetBlock(x, islandHeight + 1, z)).IsFluid)
+			if (Map.GetBlock(x, islandHeight, z).ID == BlockID.Grass && !Map.GetBlock(x, islandHeight + 1, z).IsFluid())
 			{
 				if (val <= 0.2)
-					Map.SetBlock(x, islandHeight + 1, z, BlockType.TallGrass);
+					Map.SetBlock(x, islandHeight + 1, z, new Block(BlockID.TallGrass));
 			}
 		}
 	}
@@ -89,14 +89,14 @@ public sealed class GrassyGenerator : TerrainGenerator
 	private void GenerateBase(int x, int y, int z) 
 	{
 		float noise = terrainNoise3D.GetNoise(x, y, z);
-		ushort block = 0;
+		Block block = new Block(BlockID.Air);
 		
 		if (IsInRange(noise, 0.0f, 0.6f))
-			block = BlockType.Dirt;
+			block.ID = BlockID.Dirt;
 
-		if (IsInRange(noise, 0.6f, 1.0f)) block = BlockType.Stone;
+		if (IsInRange(noise, 0.6f, 1.0f)) block.ID = BlockID.Stone;
 		
-		if (block != 0) 
+		if (block.ID != BlockID.Air) 
 			Map.SetBlock(x, y, z, block);
 	}
 	
@@ -105,14 +105,14 @@ public sealed class GrassyGenerator : TerrainGenerator
 		if (caveNoise3D.GetNoise(x, y, z) > 0.7f) return;
 		
 		float noise = islandNoise3D.GetNoise(x, y, z);
-		ushort block = 0;
+		Block block = new Block(BlockID.Air);
 		
 		if (IsInRange(noise, 0.0f, 0.6f)) 
-			block = y == height ? BlockType.Grass : BlockType.Dirt;
+			block.ID = y == height ? BlockID.Grass : BlockID.Dirt;
 
-		if (IsInRange(noise, 0.6f, 1.0f)) block = BlockType.Stone;
+		if (IsInRange(noise, 0.6f, 1.0f)) block.ID = BlockID.Stone;
 		
-		if (block != 0) 
+		if (block.ID != BlockID.Air) 
 			Map.SetBlock(x, y, z, block);
 	}
 }

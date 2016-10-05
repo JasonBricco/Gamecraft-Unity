@@ -1,8 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class TreeGenerator : StructureGenerator 
+public sealed class TreeGenerator : StructureGenerator 
 {
+	private static readonly Block treeTrunk = new Block(BlockID.TreeTrunk);
+	private static readonly Block leaves = new Block(BlockID.Leaves);
+
 	public override void Generate(HitInfo info)
 	{
 		int x = info.adjPos.x;
@@ -12,14 +15,14 @@ public class TreeGenerator : StructureGenerator
 		List<BlockInstance> blocks = new List<BlockInstance>();
 		
 		for (int i = y; i < y + 7; i++)
-			blocks.Add(new BlockInstance(BlockType.TreeTrunk, x, i, z));
+			blocks.Add(new BlockInstance(treeTrunk, x, i, z));
 		
 		for (int j = -3; j <= 3; j++)
 		{
 			for (int k = -3; k <= 3; k++)
 			{
 				for (int l = 7; l <= 10; l++)
-					blocks.Add(new BlockInstance(BlockType.Leaves, x + j, y + l, z + k));
+					blocks.Add(new BlockInstance(leaves, x + j, y + l, z + k));
 			}
 		}
 		
@@ -28,7 +31,7 @@ public class TreeGenerator : StructureGenerator
 
 	public static void BoxyTreeTerrain(int x, int y, int z)
 	{
-		if (Map.GetBlockSafe(x, y, z) != BlockType.Grass || BlockRegistry.GetBlock(Map.GetBlockSafe(x, y + 1, z)).IsFluid)
+		if (Map.GetBlockSafe(x, y, z).ID != BlockID.Grass || Map.GetBlockSafe(x, y + 1, z).IsFluid())
 			return;
 
 		for (int i = -5; i <= 5; i++)
@@ -37,23 +40,23 @@ public class TreeGenerator : StructureGenerator
 			{
 				for (int k = 1; k <= 9; k++)
 				{
-					ushort block = Map.GetBlockSafe(x + i, y + k, z + j);
+					Block block = Map.GetBlockSafe(x + i, y + k, z + j);
 
-					if (block == BlockType.Boundary || block == BlockType.TreeTrunk || block == BlockType.Leaves)
+					if (block.ID == BlockID.Boundary || block.ID == BlockID.TreeTrunk || block.ID == BlockID.Leaves)
 						return;
 				}
 			}
 		}
 
 		for (int i = y + 1; i < y + 9; i++)
-			Map.SetBlock(x, i, z, BlockType.TreeTrunk);
+			Map.SetBlock(x, i, z, treeTrunk);
 
 		for (int j = -3; j <= 3; j++)
 		{
 			for (int k = -3; k <= 3; k++)
 			{
 				for (int l = 7; l <= 10; l++)
-					Map.SetBlock(x + j, y + l, z + k, BlockType.Leaves);
+					Map.SetBlock(x + j, y + l, z + k, leaves);
 			}
 		}
 	}

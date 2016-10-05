@@ -6,7 +6,8 @@ using System.IO;
 public class SerializableData
 {
 	public List<int> countList = new List<int>();
-	public List<ushort> dataList = new List<ushort>();
+	public List<byte> idList = new List<byte>();
+	public List<byte> dataList = new List<byte>();
 	public Vector3 playerPos = new Vector3(-1, -1, -1);
 }
 	

@@ -1,8 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class MassBreak : StructureGenerator 
+public sealed class MassBreak : StructureGenerator 
 {
+	private readonly Block air = new Block(BlockID.Air);
+
 	public override void Generate(HitInfo info)
 	{
 		List<BlockInstance> blocks = new List<BlockInstance>();
@@ -28,7 +30,7 @@ public class MassBreak : StructureGenerator
 		for (int x = startX - 1; x <= startX + 1; x++)
 		{
 			for (int z = startZ - 1; z <= startZ + 1; z++)
-				blocks.Add(new BlockInstance(BlockType.Air, x, startY, z));
+				blocks.Add(new BlockInstance(air, x, startY, z));
 		}
 	}
 	
@@ -37,7 +39,7 @@ public class MassBreak : StructureGenerator
 		for (int x = startX - 1; x <= startX + 1; x++)
 		{
 			for (int y = startY - 1; y <= startY + 1; y++)
-				blocks.Add(new BlockInstance(BlockType.Air, x, y, startZ));
+				blocks.Add(new BlockInstance(air, x, y, startZ));
 		}
 	}
 	
@@ -46,7 +48,7 @@ public class MassBreak : StructureGenerator
 		for (int z = startZ - 1; z <= startZ + 1; z++)
 		{
 			for (int y = startY - 1; y <= startY + 1; y++)
-				blocks.Add(new BlockInstance(BlockType.Air, startX, y, z));
+				blocks.Add(new BlockInstance(air, startX, y, z));
 		}
 	}
 }

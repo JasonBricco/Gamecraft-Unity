@@ -23,11 +23,9 @@ public class ParticleController : MonoBehaviour
 		for (int i = 0; i < count; i++)
 		{
 			Vector3i pos = Utils.GetBlockPos(particles[i].position);
-			ushort ID = Map.GetBlockSafe(pos.x, pos.y, pos.z);
+			Block block = Map.GetBlockSafe(pos.x, pos.y, pos.z);
 
-			Block block = BlockRegistry.GetBlock(ID);
-
-			if (block.BlockParticles)
+			if (block.BlockParticles())
 				block.KillParticle(pos.y, ref particles[i]);
 		}
 

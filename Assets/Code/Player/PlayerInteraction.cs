@@ -40,7 +40,7 @@ public class PlayerInteraction : MonoBehaviour
 	private delegate void Add();
 	private Add currentAdd;
 	
-	private ushort selectedBlock = BlockType.Grass;
+	private Block selectedBlock = new Block(BlockID.Grass);
 
 	private static bool reticleEnabled = true;
 
@@ -108,11 +108,11 @@ public class PlayerInteraction : MonoBehaviour
 	
 	public void BlockSelected(int ID)
 	{
+		Block newBlock = new Block((BlockID)ID);
 		currentAdd = AddBlock;
-		ushort block = (ushort)ID;
-		selectedBlock = block;
+		selectedBlock = newBlock;
 		Engine.ChangeState(GameState.Playing);
-		ShowSelectedBlock(block);
+		ShowSelectedBlock(newBlock);
 	}
 	
 	public void StructureSelected(int ID)
@@ -122,9 +122,9 @@ public class PlayerInteraction : MonoBehaviour
 		Engine.ChangeState(GameState.Playing);
 	}
 	
-	private void ShowSelectedBlock(ushort ID)
+	private void ShowSelectedBlock(Block block)
 	{
-		string name = BlockRegistry.GetBlock(ID).Name;
+		string name = block.Name();
 		selectedText.text = name;
 
 		UIFader.CancelCurrent();
@@ -165,7 +165,7 @@ public class PlayerInteraction : MonoBehaviour
 		if (info.hit)
 		{
 			Vector3i setPos = info.hitPos;
-			selectedBlock = BlockRegistry.GetBlock(Map.GetBlock(setPos.x, setPos.y, setPos.z)).GenericID;
+			selectedBlock = new Block(Map.GetBlock(setPos.x, setPos.y, setPos.z).ID);
 			ShowSelectedBlock(selectedBlock);
 
 			currentAdd = AddBlock;
@@ -180,7 +180,7 @@ public class PlayerInteraction : MonoBehaviour
 
 		if (info.hit)
 		{
-			bool overwrite = BlockRegistry.GetBlock(Map.GetBlock(info.hitPos.x, info.hitPos.y, info.hitPos.z)).Overwrite;
+			bool overwrite = Map.GetBlock(info.hitPos.x, info.hitPos.y, info.hitPos.z).AllowOverwrite();
 			Vector3i setPos = overwrite ? info.hitPos : info.adjPos;
 
 			bool empty = Utils.ValidatePlacement(setPos);
@@ -207,7 +207,7 @@ public class PlayerInteraction : MonoBehaviour
 		if (info.hit)
 		{
 			Vector3i setPos = info.hitPos;
-			Map.SetBlockAdvanced(setPos.x, setPos.y, setPos.z, BlockType.Air, Vector3i.zero, true);
+			Map.SetBlockAdvanced(setPos.x, setPos.y, setPos.z, new Block(BlockID.Air), Vector3i.zero, true);
 		}
 	}
 

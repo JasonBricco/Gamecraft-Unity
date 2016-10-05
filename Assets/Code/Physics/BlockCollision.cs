@@ -13,7 +13,7 @@ public enum CollisionType
 public class BlockCollision 
 {
 	private BlockCollider[] colliders = new BlockCollider[36];
-	private ushort[,,] surrounding = new ushort[3, 4, 3];
+	private Block[,,] surrounding = new Block[3, 4, 3];
 
 	public BlockCollision(GameObject collider)
 	{
@@ -24,7 +24,7 @@ public class BlockCollision
 		}
 	}
 
-	public ushort GetSurroundingBlock(int x, int y, int z)
+	public Block GetSurroundingBlock(int x, int y, int z)
 	{
 		return surrounding[x, y, z];
 	}
@@ -42,18 +42,13 @@ public class BlockCollision
 				for (int z = -1; z <= 1; z++)
 				{
 					blockPos = new Vector3i(groundBlock.x + x, groundBlock.y + y, groundBlock.z + z);
-					ushort block = Map.GetBlockSafe(blockPos.x, blockPos.y, blockPos.z);
+					Block block = Map.GetBlockSafe(blockPos.x, blockPos.y, blockPos.z);
 					surrounding[x + 1, y, z + 1] = block;
-					SetCollision(block, blockPos, colliders[index]);
+					block.SetCollision(colliders[index], blockPos.x, blockPos.y, blockPos.z);
+
 					index++;
 				}
 			}
 		}
-	}
-
-	private void SetCollision(ushort ID, Vector3i pos, BlockCollider collider)
-	{
-		Block block = BlockRegistry.GetBlock(ID);
-		block.SetCollision(collider, pos.x, pos.y, pos.z);
 	}
 }

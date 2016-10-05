@@ -37,15 +37,15 @@ public sealed class MoveController : MonoBehaviour, IUpdatable
 		canFly -= Time.deltaTime;
 		canFly = Mathf.Max(canFly, 0.0f);
 
-		ushort legsBlock = player.GetSurroundingBlock(1, 1, 1);
-		ushort headBlock = player.GetSurroundingBlock(1, 2, 1);
+		Block legsBlock = player.GetSurroundingBlock(1, 1, 1);
+		Block headBlock = player.GetSurroundingBlock(1, 2, 1);
 
 		player.ProcessBlocksInside(legsBlock, headBlock);
 
 		Vector3 accel = new Vector3(Input.GetAxisRaw("X") * speed, Gravity, Input.GetAxisRaw("Y") * speed);
 
-		bool inFluidBelow = BlockRegistry.GetBlock(legsBlock).IsFluid;
-		bool inFluidAbove = BlockRegistry.GetBlock(headBlock).IsFluid;
+		bool inFluidBelow = legsBlock.IsFluid();
+		bool inFluidAbove = headBlock.IsFluid();
 
 		bool touchingFluid = inFluidBelow || inFluidAbove;
 		if (touchingFluid) state = MoveState.Swimming;
@@ -132,9 +132,9 @@ public sealed class MoveController : MonoBehaviour, IUpdatable
 			{
 				drag = -8.0f;
 
-				int belowBlockDir = BlockRegistry.GetBlock(player.GetSurroundingBlock(1, 0, 1)).BlockDirection;
-				int legsBlockDir = BlockRegistry.GetBlock(legsBlock).BlockDirection;
-				int headBlockDir = BlockRegistry.GetBlock(headBlock).BlockDirection;
+				int belowBlockDir = player.GetSurroundingBlock(1, 0, 1).BlockDirection;
+				int legsBlockDir = legsBlock.BlockDirection;
+				int headBlockDir = headBlock.BlockDirection;
 
 				int playerDir = Player.GetRotation();
 
@@ -166,7 +166,7 @@ public sealed class MoveController : MonoBehaviour, IUpdatable
 					for (int i = 0; i < 3; i++)
 					{
 						// Exit climbing state if no blocks surrounding the player trigger climbing state.
-						if (BlockRegistry.GetBlock(player.GetSurroundingBlock(1, i, 1)).MoveState == MoveState.Climbing)
+						if (player.GetSurroundingBlock(1, i, 1).TriggerState() == MoveState.Climbing)
 							endClimb = false;
 					}
 
@@ -215,9 +215,9 @@ public sealed class MoveController : MonoBehaviour, IUpdatable
 		if ((colFlags & CollisionFlags.Sides) != 0)
 		{
 			Vector3i pos = Utils.GetBlockPos(hit.transform.position);
-			ushort block = Map.GetBlockSafe(pos.x, pos.y, pos.z);
+			Block block = Map.GetBlockSafe(pos.x, pos.y, pos.z);
 
-			if (BlockRegistry.GetBlock(block).MoveState == MoveState.Climbing)
+			if (block.TriggerState() == MoveState.Climbing)
 				state = MoveState.Climbing;
 		}
 	}

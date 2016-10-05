@@ -3,8 +3,10 @@ using System.Collections.Generic;
 
 public enum Axis { X, Y, Z }
 
-public class MeshBuilder
+public sealed class MeshBuilder
 {
+	public static readonly MeshBuilder instance = new MeshBuilder();
+
 	private readonly Vector3[] squareFront = 
 	{
 		new Vector3(-0.5f, -0.5f, 0.5f),
@@ -235,7 +237,7 @@ public class MeshBuilder
 
 	public void BuildCube(Block block, int x, int y, int z, MeshData meshData)
 	{
-		int index = block.MeshIndex;
+		int index = block.MeshIndex();
 
 		int localX = x & (Chunk.Size - 1);
 		int localZ = z & (Chunk.Size - 1);
@@ -282,7 +284,7 @@ public class MeshBuilder
 	public void BuildLadder(Block block, int x, int y, int z, MeshData meshData)
 	{
 		int direction = block.BlockDirection;
-		int index = block.MeshIndex;
+		int index = block.MeshIndex();
 
 		int localX = x & (Chunk.Size - 1);
 		int localZ = z & (Chunk.Size - 1);
@@ -315,7 +317,7 @@ public class MeshBuilder
 
 	public void BuildFluid(Block block, int x, int y, int z, MeshData meshData)
 	{
-		int index = block.MeshIndex;
+		int index = block.MeshIndex();
 
 		int localX = x & (Chunk.Size - 1);
 		int localZ = z & (Chunk.Size - 1);
@@ -366,7 +368,7 @@ public class MeshBuilder
 
 	public void BuildSquareCutout(Block block, int x, int y, int z, MeshData meshData)
 	{
-		int index = block.MeshIndex;
+		int index = block.MeshIndex();
 
 		int localX = x & (Chunk.Size - 1);
 		int localZ = z & (Chunk.Size - 1);
@@ -388,7 +390,7 @@ public class MeshBuilder
 
 	public void BuildFrontSlope(Block block, int x, int y, int z, MeshData meshData)
 	{
-		int index = block.MeshIndex;
+		int index = block.MeshIndex();
 
 		int localX = x & (Chunk.Size - 1);
 		int localZ = z & (Chunk.Size - 1);
@@ -403,14 +405,14 @@ public class MeshBuilder
 
 		if (IsFaceVisible(block, x + 1, y, z, Direction.Left)) 
 		{
-			BuildTriangleFace(index, block, localX, y, localZ, meshData, frontSlopeRight, Direction.Right);
+			BuildTriangleFace(index, localX, y, localZ, meshData, frontSlopeRight, Direction.Right);
 			AddFrontSlopeUVs(block, index, Direction.Right, meshData);
 			BuildTriangleLight(Axis.X, index, worldPos, meshData, frontSlopeOffsetRight);
 		}
 
 		if (IsFaceVisible(block, x - 1, y, z, Direction.Right)) 
 		{
-			BuildTriangleFace(index, block, localX, y, localZ, meshData, frontSlopeLeft, Direction.Left);
+			BuildTriangleFace(index, localX, y, localZ, meshData, frontSlopeLeft, Direction.Left);
 			AddFrontSlopeUVs(block, index, Direction.Left, meshData);
 			BuildTriangleLight(Axis.X, index, worldPos, meshData, frontSlopeOffsetLeft);
 		}
@@ -427,7 +429,7 @@ public class MeshBuilder
 
 	public void BuildBackSlope(Block block, int x, int y, int z, MeshData meshData)
 	{
-		int index = block.MeshIndex;
+		int index = block.MeshIndex();
 
 		int localX = x & (Chunk.Size - 1);
 		int localZ = z & (Chunk.Size - 1);
@@ -442,14 +444,14 @@ public class MeshBuilder
 
 		if (IsFaceVisible(block, x + 1, y, z, Direction.Left)) 
 		{
-			BuildTriangleFace(index, block, localX, y, localZ, meshData, backSlopeRight, Direction.Right);
+			BuildTriangleFace(index, localX, y, localZ, meshData, backSlopeRight, Direction.Right);
 			AddBackSlopeUVs(block, index, Direction.Right, meshData);
 			BuildTriangleLight(Axis.X, index, worldPos, meshData, backSlopeOffsetRight);
 		}
 
 		if (IsFaceVisible(block, x - 1, y, z, Direction.Right)) 
 		{
-			BuildTriangleFace(index, block, localX, y, localZ, meshData, backSlopeLeft, Direction.Left);
+			BuildTriangleFace(index, localX, y, localZ, meshData, backSlopeLeft, Direction.Left);
 			AddBackSlopeUVs(block, index, Direction.Left, meshData);
 			BuildTriangleLight(Axis.X, index, worldPos, meshData, backSlopeOffsetLeft);
 		}
@@ -466,7 +468,7 @@ public class MeshBuilder
 
 	public void BuildRightSlope(Block block, int x, int y, int z, MeshData meshData)
 	{
-		int index = block.MeshIndex;
+		int index = block.MeshIndex();
 
 		int localX = x & (Chunk.Size - 1);
 		int localZ = z & (Chunk.Size - 1);
@@ -475,14 +477,14 @@ public class MeshBuilder
 
 		if (IsFaceVisible(block, x, y, z + 1, Direction.Back)) 
 		{
-			BuildTriangleFace(index, block, localX, y, localZ, meshData, rightSlopeFront, Direction.Front);
+			BuildTriangleFace(index, localX, y, localZ, meshData, rightSlopeFront, Direction.Front);
 			AddRightSlopeUVs(block, index, Direction.Front, meshData);
 			BuildTriangleLight(Axis.Z, index, worldPos, meshData, rightSlopeOffsetFront);
 		}
 
 		if (IsFaceVisible(block, x, y, z - 1, Direction.Front)) 
 		{
-			BuildTriangleFace(index, block, localX, y, localZ, meshData, rightSlopeBack, Direction.Back);
+			BuildTriangleFace(index, localX, y, localZ, meshData, rightSlopeBack, Direction.Back);
 			AddRightSlopeUVs(block, index, Direction.Back, meshData);
 			BuildTriangleLight(Axis.Z, index, worldPos, meshData, rightSlopeOffsetBack);
 		}
@@ -505,7 +507,7 @@ public class MeshBuilder
 
 	public void BuildLeftSlope(Block block, int x, int y, int z, MeshData meshData)
 	{
-		int index = block.MeshIndex;
+		int index = block.MeshIndex();
 
 		int localX = x & (Chunk.Size - 1);
 		int localZ = z & (Chunk.Size - 1);
@@ -514,14 +516,14 @@ public class MeshBuilder
 
 		if (IsFaceVisible(block, x, y, z + 1, Direction.Back)) 
 		{
-			BuildTriangleFace(index, block, localX, y, localZ, meshData, leftSlopeFront, Direction.Front);
+			BuildTriangleFace(index, localX, y, localZ, meshData, leftSlopeFront, Direction.Front);
 			AddLeftSlopeUVs(block, index, Direction.Front, meshData);
 			BuildTriangleLight(Axis.Z, index, worldPos, meshData, leftSlopeOffsetFront);
 		}
 
 		if (IsFaceVisible(block, x, y, z - 1, Direction.Front)) 
 		{
-			BuildTriangleFace(index, block, localX, y, localZ, meshData, leftSlopeBack, Direction.Back);
+			BuildTriangleFace(index, localX, y, localZ, meshData, leftSlopeBack, Direction.Back);
 			AddLeftSlopeUVs(block, index, Direction.Back, meshData);
 			BuildTriangleLight(Axis.Z, index, worldPos, meshData, leftSlopeOffsetBack);
 		}
@@ -628,46 +630,45 @@ public class MeshBuilder
 
 	private bool IsFaceVisible(Block block, int neighborX, int neighborY, int neighborZ, int neighborFace) 
 	{
-		ushort neighborID = Map.GetBlockSafe(neighborX, neighborY, neighborZ);
-		return block.IsFaceVisible(neighborID, neighborFace);
+		Block neighbor = Map.GetBlockSafe(neighborX, neighborY, neighborZ);
+		return block.IsFaceVisible(neighbor, neighborFace);
 	}
 
-	private bool IsFluidFaceVisible(int curLevel, int nX, int nY, int nZ, ushort neighbor, int neighborFace) 
+	private bool IsFluidFaceVisible(int curLevel, int nX, int nY, int nZ, Block neighbor, int neighborFace) 
 	{
 		if (neighborFace == Direction.Down && curLevel < 5)
 			return true;
-
-		Block neighborBlock = BlockRegistry.GetBlock(neighbor);
-		CullType cull = neighborBlock.GetCullType(neighborFace);
+		
+		CullType cull = neighbor.GetCullType(neighborFace);
 
 		if (cull == CullType.Solid || cull == CullType.Cutout)
 			return false;
 
 		if (cull == CullType.Transparent)
 		{
-			if (!neighborBlock.IsFluid)
+			if (!neighbor.IsFluid())
 				return false;
 
 			if (neighborFace == Direction.Up || neighborFace == Direction.Down)
 				return false;
 
-			return neighborBlock.FluidLevel < curLevel;
+			return neighbor.FluidLevel < curLevel;
 		}
 
 		return true;
 	}
 
-	private void BuildSquareFace(int index, Block data, int x, int y, int z, MeshData meshData, Vector3[] vertices, int dir)
+	private void BuildSquareFace(int index, Block block, int x, int y, int z, MeshData meshData, Vector3[] vertices, int dir)
 	{
 		AddIndices(index, meshData);
 
 		for (int i = 0; i < vertices.Length; i++)
 			meshData.AddVertex(index, vertices[i], x, y, z);
 
-		AddUVs(data, index, dir, meshData);
+		AddUVs(block, index, dir, meshData);
 	}
 
-	private void BuildTriangleFace(int index, Block data, int x, int y, int z, MeshData meshData, Vector3[] vertices, int dir)
+	private void BuildTriangleFace(int index, int x, int y, int z, MeshData meshData, Vector3[] vertices, int dir)
 	{
 		AddSlopeIndices(index, meshData);
 
@@ -700,16 +701,15 @@ public class MeshBuilder
 		triangles.Add(offset + 0);
 	}
 
-	private void BuildFrontFluid(int index, Block data, int x, int y, int z, MeshData meshData, int dir, float offset, ushort adj)
+	private void BuildFrontFluid(int index, Block block, int x, int y, int z, MeshData meshData, int dir, float offset, Block adj)
 	{
 		AddIndices(index, meshData);
 
 		float adjOffset = -0.5f;
 
-		Block adjBlock = BlockRegistry.GetBlock(adj);
-		if (adjBlock.IsFluid)
+		if (adj.IsFluid())
 		{
-			int adjLevel = adjBlock.FluidLevel;
+			int adjLevel = adj.FluidLevel;
 			adjOffset = FluidSimulator.GetOffset(adjLevel);
 		}
 
@@ -718,19 +718,18 @@ public class MeshBuilder
 		meshData.AddVertex(index, new Vector3(0.5f, offset, 0.5f), x, y, z);
 		meshData.AddVertex(index, new Vector3(0.5f, adjOffset, 0.5f), x, y, z);
 
-		AddFluidUVs(data, index, dir, meshData, offset - adjOffset);
+		AddFluidUVs(block, index, dir, meshData, offset - adjOffset);
 	}
 
-	private void BuildBackFluid(int index, Block data, int x, int y, int z, MeshData meshData, int dir, float offset, ushort adj)
+	private void BuildBackFluid(int index, Block block, int x, int y, int z, MeshData meshData, int dir, float offset, Block adj)
 	{
 		AddIndices(index, meshData);
 
 		float adjOffset = -0.5f;
 
-		Block adjBlock = BlockRegistry.GetBlock(adj);
-		if (adjBlock.IsFluid)
+		if (adj.IsFluid())
 		{
-			int adjLevel = adjBlock.FluidLevel;
+			int adjLevel = adj.FluidLevel;
 			adjOffset = FluidSimulator.GetOffset(adjLevel);
 		}
 
@@ -739,19 +738,18 @@ public class MeshBuilder
 		meshData.AddVertex(index, new Vector3(-0.5f, offset, -0.5f), x, y, z);
 		meshData.AddVertex(index, new Vector3(-0.5f, adjOffset, -0.5f), x, y, z);
 
-		AddFluidUVs(data, index, dir, meshData, offset - adjOffset);
+		AddFluidUVs(block, index, dir, meshData, offset - adjOffset);
 	}
 
-	private void BuildRightFluid(int index, Block data, int x, int y, int z, MeshData meshData, int dir, float offset, ushort adj)
+	private void BuildRightFluid(int index, Block block, int x, int y, int z, MeshData meshData, int dir, float offset, Block adj)
 	{
 		AddIndices(index, meshData);
 
 		float adjOffset = -0.5f;
 
-		Block adjBlock = BlockRegistry.GetBlock(adj);
-		if (adjBlock.IsFluid)
+		if (adj.IsFluid())
 		{
-			int adjLevel = adjBlock.FluidLevel;
+			int adjLevel = adj.FluidLevel;
 			adjOffset = FluidSimulator.GetOffset(adjLevel);
 		}
 
@@ -760,19 +758,18 @@ public class MeshBuilder
 		meshData.AddVertex(index, new Vector3(0.5f, offset, -0.5f), x, y, z);
 		meshData.AddVertex(index, new Vector3(0.5f, adjOffset, -0.5f), x, y, z);
 
-		AddFluidUVs(data, index, dir, meshData, offset - adjOffset);
+		AddFluidUVs(block, index, dir, meshData, offset - adjOffset);
 	}
 
-	private void BuildLeftFluid(int index, Block data, int x, int y, int z, MeshData meshData, int dir, float offset, ushort adj)
+	private void BuildLeftFluid(int index, Block block, int x, int y, int z, MeshData meshData, int dir, float offset, Block adj)
 	{
 		AddIndices(index, meshData);
 
 		float adjOffset = -0.5f;
 
-		Block adjBlock = BlockRegistry.GetBlock(adj);
-		if (adjBlock.IsFluid)
+		if (adj.IsFluid())
 		{
-			int adjLevel = adjBlock.FluidLevel;
+			int adjLevel = adj.FluidLevel;
 			adjOffset = FluidSimulator.GetOffset(adjLevel);
 		}
 
@@ -781,10 +778,10 @@ public class MeshBuilder
 		meshData.AddVertex(index, new Vector3(-0.5f, offset, 0.5f), x, y, z);
 		meshData.AddVertex(index, new Vector3(-0.5f, adjOffset, 0.5f), x, y, z);
 
-		AddFluidUVs(data, index, dir, meshData, offset - adjOffset);
+		AddFluidUVs(block, index, dir, meshData, offset - adjOffset);
 	}
 
-	private void BuildTopFluid(int index, Block data, int x, int y, int z, MeshData meshData, int dir, float offset)
+	private void BuildTopFluid(int index, Block block, int x, int y, int z, MeshData meshData, int dir, float offset)
 	{
 		AddIndices(index, meshData);
 
@@ -793,17 +790,17 @@ public class MeshBuilder
 		meshData.AddVertex(index, new Vector3(-0.5f, offset, 0.5f), x, y, z);
 		meshData.AddVertex(index, new Vector3(-0.5f, offset, -0.5f), x, y, z);
 
-		AddFluidUVs(data, index, dir, meshData);
+		AddFluidUVs(block, index, dir, meshData);
 	}
 
-	private void BuildBottomFluid(int index, Block data, int x, int y, int z, MeshData meshData, int dir)
+	private void BuildBottomFluid(int index, Block block, int x, int y, int z, MeshData meshData, int dir)
 	{
 		AddIndices(index, meshData);
 
 		for (int i = 0; i < squareBottom.Length; i++)
 			meshData.AddVertex(index, squareBottom[i], x, y, z);
 
-		AddFluidUVs(data, index, dir, meshData);
+		AddFluidUVs(block, index, dir, meshData);
 	}
 
 	private void AddUVs(Block block, int index, int face, MeshData data)
@@ -956,8 +953,8 @@ public class MeshBuilder
 
 	private Color32 GetFinalLight(Vector3i a, Vector3i b, Vector3i c, Vector3i d)
 	{
-		bool t1 = BlockRegistry.GetBlock(Map.GetBlockSafe(b.x, b.y, b.z)).IsTransparent;
-		bool t2 = BlockRegistry.GetBlock(Map.GetBlockSafe(c.x, c.y, c.z)).IsTransparent;
+		bool t1 = Map.GetBlockSafe(b.x, b.y, b.z).IsTransparent();
+		bool t2 = Map.GetBlockSafe(c.x, c.y, c.z).IsTransparent();
 
 		if (t1 || t2) 
 		{
@@ -1007,7 +1004,7 @@ public class MeshBuilder
 			d = pos + new Vector3i(dx, 1, dz);
 		}
 
-		if (!BlockRegistry.GetBlock(Map.GetBlockSafe(a.x, a.y, a.z)).IsTransparent)
+		if (!Map.GetBlockSafe(a.x, a.y, a.z).IsTransparent())
 		{
 			Color32 c1 = LightUtils.GetBlockLight(a);
 			Color32 c2 = LightUtils.GetBlockLight(b);

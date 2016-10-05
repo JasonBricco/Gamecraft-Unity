@@ -9,18 +9,19 @@ public class Encoder
 		int length = Map.GetBlockCount();
 
 		int currentCount = 0;
-		ushort currentData = 0;
+		Block currentData = new Block(BlockID.Air);
 
 		for (i = 0; i < length; i++) 
 		{
-			ushort thisData = Map.GetBlockDirect(i);
+			Block thisData = Map.GetBlockDirect(i);
 
-			if (thisData != currentData) 
+			if (thisData.ID != currentData.ID) 
 			{
 				if (i != 0) 
 				{
 					data.countList.Add(currentCount);
-					data.dataList.Add(currentData);
+					data.idList.Add((byte)currentData.ID);
+					data.dataList.Add(currentData.data);
 				}
 
 				currentCount = 1;
@@ -32,7 +33,8 @@ public class Encoder
 			if (i == length - 1) 
 			{
 				data.countList.Add(currentCount);
-				data.dataList.Add(currentData);
+				data.idList.Add((byte)currentData.ID);
+				data.dataList.Add(currentData.data);
 			}
 		}
 	}
@@ -45,7 +47,7 @@ public class Encoder
 		{
 			for (int i = 0; i < data.countList[run]; i++)
 			{
-				Map.SetBlockDirect(cur, data.dataList[run]);
+				Map.SetBlockDirect(cur, new Block((BlockID)data.idList[run], data.dataList[run]));
 				cur++;
 			}
 		}

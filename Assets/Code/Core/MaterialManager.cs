@@ -1,34 +1,49 @@
 ﻿using UnityEngine;
-using System;
 
-public sealed class ShaderType : IEquatable<ShaderType>
+public sealed class ShaderType
 {
-	public static readonly ShaderType Diffuse = new ShaderType(2000, 0);
-	public static readonly ShaderType AlphaDiffuse = new ShaderType(2000, 1);
-	public static readonly ShaderType Transparent = new ShaderType(3000, 2);
-	public static readonly ShaderType TransparentCulled = new ShaderType(3000, 3);
-	public static readonly ShaderType Liquid = new ShaderType(3000, 4);
-	public static readonly ShaderType LiquidCulled = new ShaderType(3000, 5);
-
 	public int queue;
-	public int ID;
+	public Shader culled;
+	public Shader unculled = null;
 
-	public ShaderType(int queue, int ID)
+	public bool currentlyCulled = false;
+
+	public ShaderType(int queue, Shader culled, Shader unculled = null)
 	{
 		this.queue = queue;
-		this.ID = ID;
-	}
-
-	public bool Equals(ShaderType other)
-	{
-		return this.ID == other.ID;
+		this.culled = culled;
+		this.unculled = unculled;
 	}
 }
 
 public sealed class MaterialManager : ScriptableObject
 {
 	private static Material[] materials = new Material[4];
-	private static Shader[] shaders = new Shader[6];
+
+	private static ShaderType diffuse;
+	private static ShaderType cutout;
+	private static ShaderType transparent;
+	private static ShaderType liquid;
+
+	public static ShaderType Diffuse
+	{
+		get { return diffuse; }
+	}
+
+	public static ShaderType Cutout
+	{
+		get { return cutout; }
+	}
+
+	public static ShaderType Transparent
+	{
+		get { return transparent; }
+	}
+
+	public static ShaderType Liquid
+	{
+		get { return liquid; }
+	}
 
 	private void Awake()
 	{
@@ -37,15 +52,22 @@ public sealed class MaterialManager : ScriptableObject
 		materials[2] = (Material)Resources.Load("Materials/Cutout");
 		materials[3] = (Material)Resources.Load("Materials/Transparent");
 
-		shaders[0] = (Shader)Resources.Load("Shaders/Diffuse");
-		shaders[1] = (Shader)Resources.Load("Shaders/Cutout");
-		shaders[2] = (Shader)Resources.Load("Shaders/Transparent");
-		shaders[3] = (Shader)Resources.Load("Shaders/TransparentCulled");
-		shaders[4] = (Shader)Resources.Load("Shaders/Liquid");
-		shaders[5] = (Shader)Resources.Load("Shaders/LiquidCulled");
-
 		ErrorHandling.VerifyCollection(materials, "Materials");
-		ErrorHandling.VerifyCollection(shaders, "Shaders");
+
+		Shader sDiffuse = (Shader)Resources.Load("Shaders/Diffuse");
+		Shader sCutout = (Shader)Resources.Load("Shaders/Cutout");
+		Shader sTransparent = (Shader)Resources.Load("Shaders/Transparent");
+		Shader sTransparentCulled = (Shader)Resources.Load("Shaders/TransparentCulled");
+		Shader sLiquid = (Shader)Resources.Load("Shaders/Liquid");
+		Shader sLiquidCulled = (Shader)Resources.Load("Shaders/LiquidCulled");
+
+		diffuse = new ShaderType(2000, sDiffuse);
+		cutout = new ShaderType(2000, sCutout);
+		transparent = new ShaderType(3000, sTransparentCulled, sTransparent);
+		liquid = new ShaderType(3000, sLiquidCulled, sLiquid); 
+
+		SetShader(1, liquid, true);
+		SetShader(3, transparent, true);
 	}
 
 	public static Material GetMaterial(int meshIndex)
@@ -53,9 +75,13 @@ public sealed class MaterialManager : ScriptableObject
 		return materials[meshIndex];
 	}
 	
-	public static void SetShader(int meshIndex, ShaderType type)
+	public static void SetShader(int meshIndex, ShaderType type, bool culled = true)
 	{
-		materials[meshIndex].shader = shaders[type.ID];
-		materials[meshIndex].renderQueue = type.queue;
+		if (type.currentlyCulled != culled)
+		{
+			type.currentlyCulled = culled;
+			materials[meshIndex].shader = culled ? type.culled : type.unculled;
+			materials[meshIndex].renderQueue = type.queue;
+		}
 	}
 }

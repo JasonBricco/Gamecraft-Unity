@@ -58,7 +58,7 @@ public class SunlightEngine
 		
 		if (newSunHeight == oldSunHeight) 
 		{
-			if (BlockRegistry.GetBlock(Map.GetBlock(pos.x, pos.y, pos.z)).IsTransparent)
+			if (Map.GetBlock(pos.x, pos.y, pos.z).IsTransparent())
 				Update(pos, nodes);
 			else
 				Remove(pos, nodes);
@@ -93,7 +93,7 @@ public class SunlightEngine
 					if (MapLight.GetSunlight(x, y, z) > LightUtils.MinLight)
 						sunNodes.Enqueue(new Vector3i(x, y, z));
 					
-					byte light = BlockRegistry.GetBlock(Map.GetBlock(x, y, z)).LightEmitted;
+					byte light = Map.GetBlock(x, y, z).LightEmitted();
 					
 					if (light > LightUtils.MinLight)
 					{
@@ -114,8 +114,8 @@ public class SunlightEngine
 		{
 			Vector3i pos = nodes.Dequeue();
 
-			ushort block = Map.GetBlock(pos.x, pos.y, pos.z);
-			int light = MapLight.GetSunlight(pos.x, pos.y, pos.z) - LightUtils.GetLightStep(block);
+			Block block = Map.GetBlock(pos.x, pos.y, pos.z);
+			int light = MapLight.GetSunlight(pos.x, pos.y, pos.z) - block.GetLightStep();
 			
 			if (light <= LightUtils.MinLight) 
 				continue;
@@ -128,7 +128,7 @@ public class SunlightEngine
 				{
 					block = Map.GetBlock(nextPos.x, nextPos.y, nextPos.z);
 
-					if (BlockRegistry.GetBlock(block).IsTransparent && SetMax((byte)light, nextPos.x, nextPos.y, nextPos.z)) 
+					if (block.IsTransparent() && SetMax((byte)light, nextPos.x, nextPos.y, nextPos.z)) 
 					{
 						nodes.Enqueue(nextPos);
 
@@ -174,17 +174,16 @@ public class SunlightEngine
 
 				if (Map.IsInMap(nextPos.x, nextPos.z))
 				{
-					ushort block = Map.GetBlock(nextPos.x, nextPos.y, nextPos.z);
+					Block block = Map.GetBlock(nextPos.x, nextPos.y, nextPos.z);
 					
-					if (BlockRegistry.GetBlock(block).IsTransparent) 
+					if (block.IsTransparent()) 
 					{
 						if (MapLight.GetSunlight(nextPos.x, nextPos.y, nextPos.z) <= light) 
 						{
 							nodes.Enqueue(nextPos);
 							ChunkManager.FlagChunkForUpdate(nextPos.x, nextPos.z);
 						}
-						else
-							newNodes.Enqueue(nextPos);
+						else newNodes.Enqueue(nextPos);
 					}
 				}
 			}

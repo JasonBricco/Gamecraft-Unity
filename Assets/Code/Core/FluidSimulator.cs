@@ -50,6 +50,7 @@ public class FluidSimulator : ScriptableObject, IUpdatable
 		
 	public static void AddFluidAndFlow(int x, int y, int z, Block block)
 	{
+		if (!block.IsFluid()) return;
 		flowQueue.Enqueue(new BlockInstance(block, x, y, z));
 	}
 		
@@ -95,30 +96,30 @@ public class FluidSimulator : ScriptableObject, IUpdatable
 		UnflowIfPossible(blockInst.x, blockInst.y, blockInst.z + 1, curIndex, fluidLevel);
 	}
 		
-	private static bool FlowIfPossible(int nX, int nY, int nZ, Index curIndex, int fluidLevel, bool down = false)
+	private static bool FlowIfPossible(int x, int y, int z, Index curIndex, int fluidLevel, bool down = false)
 	{
-		if (!Map.IsInMap(nX, nY, nZ)) return false;
+		if (!Map.IsInMap(x, y, z)) return false;
 
-		Block neighbor = Map.GetBlock(nX, nY, nZ);
+		Block block = Map.GetBlock(x, y, z);
 		bool canFlow = false;
 
 		if (down)
 		{
-			if (neighbor.IsFluid())
+			if (block.IsFluid())
 			{
-				if (neighbor.FluidLevel < MaxFluidLevel)
+				if (block.FluidLevel < MaxFluidLevel)
 					canFlow = true;
 				else return true;
 			}
-			else canFlow = neighbor.AllowOverwrite();
+			else canFlow = block.AllowOverwrite();
 		}
-		else canFlow = neighbor.IsFluid() ? neighbor.FluidLevel < fluidLevel - 1 : neighbor.AllowOverwrite();
+		else canFlow = block.IsFluid() ? block.FluidLevel < fluidLevel - 1 : block.AllowOverwrite();
 
 		if (canFlow)
 		{
 			Block newFluid = new Block(BlockID.Water, fluidLevel - 1);
-			Map.SetBlock(nX, nY, nZ, newFluid);
-			blocksToFlow.Add(new BlockInstance(newFluid, nX, nY, nZ));
+			Map.SetBlock(x, y, z, newFluid);
+			blocksToFlow.Add(new BlockInstance(newFluid, x, y, z));
 			return true;
 		}
 
@@ -145,28 +146,11 @@ public class FluidSimulator : ScriptableObject, IUpdatable
 		
 	public static void TryFlowSurrounding(int x, int y, int z)
 	{
-		Index index = new Index(x, y, z);
-
-		Block leftBlock = Map.GetBlockSafe(x - 1, y, z);
-		Block rightBlock = Map.GetBlockSafe(x + 1, y, z);
-		Block backBlock = Map.GetBlockSafe(x, y, z - 1);
-		Block frontBlock = Map.GetBlockSafe(x, y, z + 1);
-		Block topBlock = Map.GetBlock(x, y + 1, z);
-
-		if (leftBlock.IsFluid() && leftBlock.FluidLevel > MinFluidLevel) 
-			FlowIfPossible(x, y, z, index, leftBlock.FluidLevel);
-		
-		if (rightBlock.IsFluid() && rightBlock.FluidLevel > MinFluidLevel) 
-			FlowIfPossible(x, y, z, index, rightBlock.FluidLevel);
-		
-		if (backBlock.IsFluid() && backBlock.FluidLevel > MinFluidLevel) 
-			FlowIfPossible(x, y, z, index, backBlock.FluidLevel);
-		
-		if (frontBlock.IsFluid() && frontBlock.FluidLevel > MinFluidLevel) 
-			FlowIfPossible(x, y, z, index, frontBlock.FluidLevel);
-		
-		if (topBlock.IsFluid() && topBlock.FluidLevel > MinFluidLevel) 
-			FlowIfPossible(x, y, z, index, topBlock.FluidLevel);
+		AddFluidAndFlow(x - 1, y, z, Map.GetBlockSafe(x - 1, y, z));
+		AddFluidAndFlow(x + 1, y, z, Map.GetBlockSafe(x + 1, y, z));
+		AddFluidAndFlow(x, y, z - 1, Map.GetBlockSafe(x, y, z - 1));
+		AddFluidAndFlow(x, y, z + 1, Map.GetBlockSafe(x, y, z + 1));
+		AddFluidAndFlow(x, y + 1, z, Map.GetBlockSafe(x, y + 1, z));
 	}
 		
 	private void QueueBlocksForFlowing()

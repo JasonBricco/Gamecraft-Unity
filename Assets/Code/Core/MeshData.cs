@@ -74,7 +74,7 @@ public sealed class MeshData
 	{
 		Mesh mesh = new Mesh();
 
-		if (vertices[index].Count == 0)
+		if (vertices[index].Count == 0 || vertices[index].Count > 65000)
 			return mesh;
 
 		mesh.SetVertices(vertices[index]);

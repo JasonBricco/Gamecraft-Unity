@@ -23,7 +23,7 @@ public class ShowBlockInfo : MonoBehaviour
 		{
 		case DebugInfo.ID:
 			Block block = PlayerInteraction.CurrentBlock.block;
-			label.text = "Block: " + (int)block.ID + " (" + block.Name() + ")";
+			label.text = "Block: " + (int)block.ID + " (" + block.Name() + "), Data: " + block.data;
 			break;
 
 		case DebugInfo.Position:

@@ -25,7 +25,7 @@ public static class Map
 
 	public static int GetBlockCount()
 	{
-		return Height * Size * Size;
+		return blocks.Length;
 	}
 
 	public static Vector3i GetWorldCenter()

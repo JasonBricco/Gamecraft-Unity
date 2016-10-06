@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 using System.IO;
 
-[System.Serializable]
+[Serializable]
 public class SerializableData
 {
 	public List<int> countList = new List<int>();
-	public List<byte> idList = new List<byte>();
-	public List<byte> dataList = new List<byte>();
+	public List<ushort> dataList = new List<ushort>();
 	public Vector3 playerPos = new Vector3(-1, -1, -1);
 }
 	

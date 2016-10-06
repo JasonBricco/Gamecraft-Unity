@@ -52,12 +52,12 @@ public sealed class Chunk
 			MeshData meshData = new MeshData();
 			
 			int wX = X, wZ = Z;
-			
-			for (int x = wX; x < wX + Chunk.Size; x++)
+
+			for (int z = wZ; z < wZ + Chunk.Size; z++)
 			{
 				for (int y = 0; y < Map.Height; y++) 
 				{
-					for (int z = wZ; z < wZ + Chunk.Size; z++) 
+					for (int x = wX; x < wX + Chunk.Size; x++)
 					{
 						Block block = Map.GetBlock(x, y, z);
 

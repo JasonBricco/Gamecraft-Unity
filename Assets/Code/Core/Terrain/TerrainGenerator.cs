@@ -3,24 +3,22 @@ using UnityEngine;
 public class TerrainGenerator 
 {
 	private Vector2i center;
-	private int radius;
 
 	public virtual void Initialize(int x, int z) 
 	{
 		int halfSize = Map.Size / 2;
 		center = new Vector2i(halfSize, halfSize);
-		radius = halfSize;
 	}
 
 	protected void GenerateChunk(int worldX, int worldZ)
 	{
-		for (int x = worldX; x < worldX + Chunk.Size; x++) 
+		for (int z = worldZ; z < worldZ + Chunk.Size; z++)
 		{
-			for (int z = worldZ; z < worldZ + Chunk.Size; z++)
+			for (int x = worldX; x < worldX + Chunk.Size; x++) 
 			{
 				int valueInCircle = Utils.Square(x - center.x) + Utils.Square(z - center.z);
 
-				int edge = Utils.Square(radius);
+				int edge = Utils.Square(Map.Radius);
 				int beginFalloff = edge - 8192;
 
 				if (valueInCircle < edge)

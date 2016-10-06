@@ -70,7 +70,7 @@ public class Player : MonoBehaviour, IUpdatable
 	private Vector3 TryFindLand()
 	{
 		Vector3i? land = null;
-		Vector3i center = new Vector3i(Map.GetWorldCenter());
+		Vector3i center = Map.GetWorldCenter();
 
 		for (int x = center.x - 20; x <= center.x + 20; x++)
 		{

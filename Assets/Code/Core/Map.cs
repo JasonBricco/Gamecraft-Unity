@@ -14,6 +14,7 @@ public static class Map
 	public const int Height = 128;
 	public const int WidthChunks = Size / Chunk.Size;
 	public const int SeaLevel = 50;
+	public const int Radius = Size / 2;
 
 	private static int generatorID;
 	
@@ -27,10 +28,9 @@ public static class Map
 		return Height * Size * Size;
 	}
 
-	public static Vector3 GetWorldCenter()
+	public static Vector3i GetWorldCenter()
 	{
-		int n = (Size >> 1) + (Chunk.Size >> 1);
-		return new Vector3(n, 0, n);
+		return new Vector3i(Radius, 0, Radius);
 	}
 
 	public static void SetWorldType(int ID)
@@ -48,9 +48,9 @@ public static class Map
 		
 		Vector3i pos = new Vector3i();
 
-		for (int x = 0; x < WidthChunks; x++)
+		for (int z = 0; z < WidthChunks; z++)
 		{
-			for (int z = 0; z < WidthChunks; z++)
+			for (int x = 0; x < WidthChunks; x++)
 			{
 				pos.x = x;
 				pos.z = z;

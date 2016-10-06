@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class Settings : ScriptableObject 
+public sealed class Settings : MonoBehaviour 
 {
 	private Slider sensitivitySlider;
 	private Text sensitivityText;
@@ -18,7 +18,6 @@ public class Settings : ScriptableObject
 	public static int CameraSensitivity
 	{
 		get { return cameraSensitivity; }
-		set { cameraSensitivity = value; }
 	}
 
 	public static int FogStart
@@ -52,27 +51,52 @@ public class Settings : ScriptableObject
 		SetTickSpeed(PlayerPrefs.HasKey("TickSpeed") ? PlayerPrefs.GetFloat("TickSpeed") : 0.25f, UIStore.GetUI<Text>("TickSpeedValue"));
 	}
 
-	public void SetViewRange(int range)
+	public void AdjustViewRange(int amount)
+	{
+		SetViewRange(viewRange + amount);
+	}
+
+	private void SetViewRange(int range)
 	{
 		viewRange = Mathf.Clamp(range, 40, 300);
 		Camera.main.farClipPlane = viewRange;
 		RenderSettings.fogStartDistance = fogStart = viewRange - 40;
 		RenderSettings.fogEndDistance = fogEnd = viewRange;
-		viewRangeText.text = Settings.ViewRange.ToString();
+		viewRangeText.text = viewRange.ToString();
 	}
 
-	public void SetCameraSensitivity(int value)
+	private void SetCameraSensitivity(int value)
 	{
 		sensitivitySlider.value = value;
 	}
 
 	public void SetSensitivity(float value)
 	{
-		Settings.CameraSensitivity = (int)value;
+		cameraSensitivity = (int)value;
 		sensitivityText.text = value.ToString("F0");
 	}
 
-	public static void SetTickSpeed(float val, Text t)
+	public void ChangeTickSpeed()
+	{
+		Text speedText = UIStore.GetUI<Text>("TickSpeedValue");
+
+		switch (speedText.text)
+		{
+		case "Fast":
+			SetTickSpeed(0.50f, speedText);
+			break;
+
+		case "Medium":
+			SetTickSpeed(1.0f, speedText);
+			break;
+
+		case "Slow":
+			SetTickSpeed(0.25f, speedText);
+			break;
+		}
+	}
+
+	private void SetTickSpeed(float val, Text t)
 	{
 		if (Mathf.Approximately(val, 0.25f))
 		{
@@ -95,10 +119,11 @@ public class Settings : ScriptableObject
 	{
 		PlayerPrefs.DeleteAll();
 		SetCameraSensitivity(5);
+		SetTickSpeed(0.25f, UIStore.GetUI<Text>("TickSpeedValue"));
 		SetViewRange(200);
 	}
 
-	public void OnDestroy()
+	private void OnDestroy()
 	{
 		PlayerPrefs.SetInt("CameraSensitivity", cameraSensitivity);
 		PlayerPrefs.SetInt("ViewRange", viewRange);

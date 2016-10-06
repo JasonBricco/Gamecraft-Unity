@@ -204,41 +204,6 @@ public class UIManager : MonoBehaviour
 		pauseWindow.SetActive(true);
 	}
 
-	public void ResetSettingsButtonHandler(Settings settings)
-	{
-		settings.Reset();
-	}
-
-	public void IncreaseViewRangeHandler(Settings settings)
-	{
-		settings.SetViewRange(Settings.ViewRange + 20);
-	}
-
-	public void DecreaseViewRangeHandler(Settings settings)
-	{
-		settings.SetViewRange(Settings.ViewRange - 20);
-	}
-
-	public void ChangeTickSpeedHandler()
-	{
-		Text speedText = UIStore.GetUI<Text>("TickSpeedValue");
-
-		switch (speedText.text)
-		{
-		case "Fast":
-			Settings.SetTickSpeed(0.50f, speedText);
-			break;
-
-		case "Medium":
-			Settings.SetTickSpeed(1.0f, speedText);
-			break;
-
-		case "Slow":
-			Settings.SetTickSpeed(0.25f, speedText);
-			break;
-		}
-	}
-
 	public void DeleteSaveButtonHandler()
 	{
 		MapData.DeleteAll();

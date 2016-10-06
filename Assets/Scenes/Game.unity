@@ -1634,7 +1634,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionClass: {fileID: 1268576722}
-  blockID: 24
+  blockID: 12
 --- !u!114 &319639526
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2034,7 +2034,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 99c698fa90fdc4867938ed071d1382c0, type: 3}
+  m_Sprite: {fileID: 609879684}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2409,6 +2409,48 @@ RectTransform:
   m_AnchoredPosition: {x: 0.5, y: 0}
   m_SizeDelta: {x: -1, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!213 &438150634
+Sprite:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_Rect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 32
+    height: 32
+  m_Offset: {x: 0, y: 0}
+  m_Border: {x: 0, y: 0, z: 0, w: 0}
+  m_PixelsToUnits: 100
+  m_Pivot: {x: 0.5, y: 0.5}
+  m_Extrude: 0
+  m_IsPolygon: 0
+  m_AtlasName: 
+  m_PackingTag: 
+  m_RD:
+    texture: {fileID: 2800000, guid: 94a72d66d39904c9cbb11db7f0697fbf, type: 3}
+    alphaTexture: {fileID: 0}
+    vertices:
+    - serializedVersion: 2
+      pos: {x: -0.16, y: 0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: -0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: 0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: -0.16, y: -0.16, z: 0}
+    indices: 030000000100020001000000
+    textureRect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 32
+      height: 32
+    textureRectOffset: {x: 0, y: 0}
+    settingsRaw: 64
+    uvTransform: {x: 100, y: 16, z: 100, w: 16}
 --- !u!1 &549518206
 GameObject:
   m_ObjectHideFlags: 0
@@ -2482,6 +2524,48 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 549518206}
+--- !u!213 &609879684
+Sprite:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_Rect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 32
+    height: 32
+  m_Offset: {x: 0, y: 0}
+  m_Border: {x: 0, y: 0, z: 0, w: 0}
+  m_PixelsToUnits: 100
+  m_Pivot: {x: 0.5, y: 0.5}
+  m_Extrude: 0
+  m_IsPolygon: 0
+  m_AtlasName: 
+  m_PackingTag: 
+  m_RD:
+    texture: {fileID: 2800000, guid: f248cae350389400d95465a7ef60eab1, type: 3}
+    alphaTexture: {fileID: 0}
+    vertices:
+    - serializedVersion: 2
+      pos: {x: -0.16, y: 0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: -0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: 0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: -0.16, y: -0.16, z: 0}
+    indices: 030000000100020001000000
+    textureRect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 32
+      height: 32
+    textureRectOffset: {x: 0, y: 0}
+    settingsRaw: 64
+    uvTransform: {x: 100, y: 16, z: 100, w: 16}
 --- !u!1 &621092853
 GameObject:
   m_ObjectHideFlags: 0
@@ -2567,7 +2651,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionClass: {fileID: 1268576722}
-  blockID: 35
+  blockID: 15
 --- !u!114 &623761998
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2728,6 +2812,48 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 4, y: 4}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!213 &683620585
+Sprite:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_Rect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 32
+    height: 32
+  m_Offset: {x: 0, y: 0}
+  m_Border: {x: 0, y: 0, z: 0, w: 0}
+  m_PixelsToUnits: 100
+  m_Pivot: {x: 0.5, y: 0.5}
+  m_Extrude: 0
+  m_IsPolygon: 0
+  m_AtlasName: 
+  m_PackingTag: 
+  m_RD:
+    texture: {fileID: 2800000, guid: 0beae11cf8b414fc7b0a9dfdc889d10c, type: 3}
+    alphaTexture: {fileID: 0}
+    vertices:
+    - serializedVersion: 2
+      pos: {x: -0.16, y: 0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: -0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: 0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: -0.16, y: -0.16, z: 0}
+    indices: 030000000100020001000000
+    textureRect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 32
+      height: 32
+    textureRectOffset: {x: 0, y: 0}
+    settingsRaw: 64
+    uvTransform: {x: 100, y: 16, z: 100, w: 16}
 --- !u!1 &687935564
 GameObject:
   m_ObjectHideFlags: 0
@@ -2998,7 +3124,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionClass: {fileID: 1268576722}
-  blockID: 19
+  blockID: 11
 --- !u!114 &728602300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3291,7 +3417,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionClass: {fileID: 1268576722}
-  blockID: 12
+  blockID: 8
 --- !u!114 &781448674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3365,7 +3491,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: ea86f99c76e0e486c94667ff3d57b4df, type: 3}
+  m_Sprite: {fileID: 883082436}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3380,6 +3506,52 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 781448671}
+--- !u!213 &883082436
+Sprite:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_Rect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 32
+    height: 32
+  m_Offset: {x: 0, y: 0}
+  m_Border: {x: 0, y: 0, z: 0, w: 0}
+  m_PixelsToUnits: 100
+  m_Pivot: {x: 0.5, y: 0.5}
+  m_Extrude: 0
+  m_IsPolygon: 0
+  m_AtlasName: 
+  m_PackingTag: 
+  m_RD:
+    texture: {fileID: 2800000, guid: f1182edd8e28544be833382739b74aee, type: 3}
+    alphaTexture: {fileID: 0}
+    vertices:
+    - serializedVersion: 2
+      pos: {x: 0.11, y: 0.05, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: -0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: 0, z: 0}
+    - serializedVersion: 2
+      pos: {x: -0.1, y: 0.05, z: 0}
+    - serializedVersion: 2
+      pos: {x: -0.16, y: 0.04, z: 0}
+    - serializedVersion: 2
+      pos: {x: -0.16, y: -0.16, z: 0}
+    indices: 050004000100030001000400000001000300020001000000
+    textureRect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 32
+      height: 20.987087
+    textureRectOffset: {x: 0, y: 0}
+    settingsRaw: 64
+    uvTransform: {x: 100, y: 16, z: 100, w: 16}
 --- !u!1 &889212608
 GameObject:
   m_ObjectHideFlags: 0
@@ -3430,7 +3602,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionClass: {fileID: 1268576722}
-  blockID: 29
+  blockID: 13
 --- !u!114 &889212611
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4120,6 +4292,48 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1011440648}
+--- !u!213 &1035252861
+Sprite:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_Rect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 32
+    height: 32
+  m_Offset: {x: 0, y: 0}
+  m_Border: {x: 0, y: 0, z: 0, w: 0}
+  m_PixelsToUnits: 100
+  m_Pivot: {x: 0.5, y: 0.5}
+  m_Extrude: 0
+  m_IsPolygon: 0
+  m_AtlasName: 
+  m_PackingTag: 
+  m_RD:
+    texture: {fileID: 2800000, guid: 1c772a90e39dc4e1d924a44cb14b385c, type: 3}
+    alphaTexture: {fileID: 0}
+    vertices:
+    - serializedVersion: 2
+      pos: {x: -0.16, y: 0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: -0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: 0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: -0.16, y: -0.16, z: 0}
+    indices: 030000000100020001000000
+    textureRect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 32
+      height: 32
+    textureRectOffset: {x: 0, y: 0}
+    settingsRaw: 64
+    uvTransform: {x: 100, y: 16, z: 100, w: 16}
 --- !u!1 &1050028774
 GameObject:
   m_ObjectHideFlags: 0
@@ -4653,7 +4867,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionClass: {fileID: 1268576722}
-  blockID: 10
+  blockID: 6
 --- !u!114 &1183470803
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4727,7 +4941,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 3b4ee62b3d12c4bcfa044c3efa5c4580, type: 3}
+  m_Sprite: {fileID: 438150634}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5143,6 +5357,48 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1252014927}
+--- !u!213 &1257333972
+Sprite:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_Rect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 32
+    height: 32
+  m_Offset: {x: 0, y: 0}
+  m_Border: {x: 0, y: 0, z: 0, w: 0}
+  m_PixelsToUnits: 100
+  m_Pivot: {x: 0.5, y: 0.5}
+  m_Extrude: 0
+  m_IsPolygon: 0
+  m_AtlasName: 
+  m_PackingTag: 
+  m_RD:
+    texture: {fileID: 2800000, guid: 6d3ebff92942e45999fdf5dc982698f4, type: 3}
+    alphaTexture: {fileID: 0}
+    vertices:
+    - serializedVersion: 2
+      pos: {x: -0.16, y: 0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: -0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: 0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: -0.16, y: -0.16, z: 0}
+    indices: 030000000100020001000000
+    textureRect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 32
+      height: 32
+    textureRectOffset: {x: 0, y: 0}
+    settingsRaw: 64
+    uvTransform: {x: 100, y: 16, z: 100, w: 16}
 --- !u!1001 &1268576721
 Prefab:
   m_ObjectHideFlags: 0
@@ -5336,6 +5592,48 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1269117101}
+--- !u!213 &1270136368
+Sprite:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_Rect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 32
+    height: 32
+  m_Offset: {x: 0, y: 0}
+  m_Border: {x: 0, y: 0, z: 0, w: 0}
+  m_PixelsToUnits: 100
+  m_Pivot: {x: 0.5, y: 0.5}
+  m_Extrude: 0
+  m_IsPolygon: 0
+  m_AtlasName: 
+  m_PackingTag: 
+  m_RD:
+    texture: {fileID: 2800000, guid: 67461669cc8c7410dba02f3e589a4e9d, type: 3}
+    alphaTexture: {fileID: 0}
+    vertices:
+    - serializedVersion: 2
+      pos: {x: -0.16, y: 0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: -0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: 0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: -0.16, y: -0.16, z: 0}
+    indices: 030000000100020001000000
+    textureRect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 32
+      height: 32
+    textureRectOffset: {x: 0, y: 0}
+    settingsRaw: 64
+    uvTransform: {x: 100, y: 16, z: 100, w: 16}
 --- !u!1 &1305524176
 GameObject:
   m_ObjectHideFlags: 0
@@ -5408,6 +5706,48 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1305524176}
+--- !u!213 &1305687077
+Sprite:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_Rect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 32
+    height: 32
+  m_Offset: {x: 0, y: 0}
+  m_Border: {x: 0, y: 0, z: 0, w: 0}
+  m_PixelsToUnits: 100
+  m_Pivot: {x: 0.5, y: 0.5}
+  m_Extrude: 0
+  m_IsPolygon: 0
+  m_AtlasName: 
+  m_PackingTag: 
+  m_RD:
+    texture: {fileID: 2800000, guid: 668397335f20b428ea5ab71ce2c4e882, type: 3}
+    alphaTexture: {fileID: 0}
+    vertices:
+    - serializedVersion: 2
+      pos: {x: -0.16, y: 0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: -0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: 0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: -0.16, y: -0.16, z: 0}
+    indices: 030000000100020001000000
+    textureRect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 32
+      height: 32
+    textureRectOffset: {x: 0, y: 0}
+    settingsRaw: 64
+    uvTransform: {x: 100, y: 16, z: 100, w: 16}
 --- !u!1 &1340929690
 GameObject:
   m_ObjectHideFlags: 0
@@ -6357,7 +6697,7 @@ GameObject:
   - 114: {fileID: 1461246603}
   - 114: {fileID: 1461246602}
   m_Layer: 5
-  m_Name: Glowstone
+  m_Name: GlowStone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6394,7 +6734,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionClass: {fileID: 1268576722}
-  blockID: 13
+  blockID: 9
 --- !u!114 &1461246603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6468,7 +6808,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 8dfde43b86ca24beaa557c28de47b6f5, type: 3}
+  m_Sprite: {fileID: 683620585}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6672,7 +7012,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionClass: {fileID: 1268576722}
-  blockID: 9
+  blockID: 5
 --- !u!114 &1473710614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6746,7 +7086,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 85d04ac21117049fa91e080a02bdcc64, type: 3}
+  m_Sprite: {fileID: 1270136368}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7298,7 +7638,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionClass: {fileID: 1268576722}
-  blockID: 14
+  blockID: 10
 --- !u!114 &1624899104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7372,7 +7712,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: a9fc818355502476e95d3e6add13fabd, type: 3}
+  m_Sprite: {fileID: 1712726516}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7782,6 +8122,48 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1704634656}
+--- !u!213 &1712726516
+Sprite:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_Rect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 32
+    height: 32
+  m_Offset: {x: 0, y: 0}
+  m_Border: {x: 0, y: 0, z: 0, w: 0}
+  m_PixelsToUnits: 100
+  m_Pivot: {x: 0.5, y: 0.5}
+  m_Extrude: 0
+  m_IsPolygon: 0
+  m_AtlasName: 
+  m_PackingTag: 
+  m_RD:
+    texture: {fileID: 2800000, guid: 65bc00a22690b47f8939b1845a861579, type: 3}
+    alphaTexture: {fileID: 0}
+    vertices:
+    - serializedVersion: 2
+      pos: {x: -0.16, y: 0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: -0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: 0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: -0.16, y: -0.16, z: 0}
+    indices: 030000000100020001000000
+    textureRect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 32
+      height: 32
+    textureRectOffset: {x: 0, y: 0}
+    settingsRaw: 64
+    uvTransform: {x: 100, y: 16, z: 100, w: 16}
 --- !u!1 &1715955513
 GameObject:
   m_ObjectHideFlags: 0
@@ -8200,7 +8582,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 61190bb60833c4bdfb39c1a3320ed1e1, type: 3}
+  m_Sprite: {fileID: 1762842470}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8369,6 +8751,48 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1755119256}
+--- !u!213 &1762842470
+Sprite:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_Rect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 32
+    height: 32
+  m_Offset: {x: 0, y: 0}
+  m_Border: {x: 0, y: 0, z: 0, w: 0}
+  m_PixelsToUnits: 100
+  m_Pivot: {x: 0.5, y: 0.5}
+  m_Extrude: 0
+  m_IsPolygon: 0
+  m_AtlasName: 
+  m_PackingTag: 
+  m_RD:
+    texture: {fileID: 2800000, guid: 4efab25a5984b4af7889d9e8fed45c02, type: 3}
+    alphaTexture: {fileID: 0}
+    vertices:
+    - serializedVersion: 2
+      pos: {x: -0.16, y: 0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: -0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: 0.16, y: 0.16, z: 0}
+    - serializedVersion: 2
+      pos: {x: -0.16, y: -0.16, z: 0}
+    indices: 030000000100020001000000
+    textureRect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 32
+      height: 32
+    textureRectOffset: {x: 0, y: 0}
+    settingsRaw: 64
+    uvTransform: {x: 100, y: 16, z: 100, w: 16}
 --- !u!1 &1770809066
 GameObject:
   m_ObjectHideFlags: 0
@@ -8419,7 +8843,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionClass: {fileID: 1268576722}
-  blockID: 11
+  blockID: 7
 --- !u!114 &1770809069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8493,7 +8917,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: efb6a14299c50453690cf8093b9dafac, type: 3}
+  m_Sprite: {fileID: 1305687077}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8638,7 +9062,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: bcbde335045b8454aaf7f461e9e7bb49, type: 3}
+  m_Sprite: {fileID: 1035252861}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8848,7 +9272,7 @@ GameObject:
   - 114: {fileID: 1862648550}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: Canvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -9727,7 +10151,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 844fae451ee7f4d73a43c5cd6e18743d, type: 3}
+  m_Sprite: {fileID: 1257333972}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

@@ -1,18 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+// Used to pass data about a block selection from the UI to the game code.
 public class BlockUIData : MonoBehaviour
 {
-	[SerializeField] private PlayerInteraction interactionClass;
-	[SerializeField] private int blockID;
-
-	public PlayerInteraction InteractionClass
-	{
-		get { return interactionClass; }
-	}
-
-	public int BlockID
-	{
-		get { return blockID; }
-	}
+	public PlayerInteraction interactionClass;
+	public int blockID;
 }

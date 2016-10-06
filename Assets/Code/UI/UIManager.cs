@@ -136,13 +136,13 @@ public class UIManager : MonoBehaviour
 	public void BlockSelectedHandler(BlockUIData data)
 	{
 		blockWindow.SetActive(false);
-		data.InteractionClass.BlockSelected(data.BlockID);
+		data.interactionClass.BlockSelected(data.blockID);
 	}
 
 	public void StructureSelectedHandler(BlockUIData data)
 	{
 		structureWindow.SetActive(false);
-		data.InteractionClass.StructureSelected(data.BlockID);
+		data.interactionClass.StructureSelected(data.blockID);
 	}
 
 	public void SetDayButtonHandler(Environment env)

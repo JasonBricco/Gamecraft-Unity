@@ -92,7 +92,7 @@ public class ChunkManager : ScriptableObject, IUpdatable
 
 	private static void QueueChunkIfNecessary(Chunk chunk)
 	{
-		if (!chunk.flaggedForUpdate)
+		if (chunk != null && !chunk.flaggedForUpdate)
 		{
 			chunk.flaggedForUpdate = true;
 			chunksToUpdate.Enqueue(chunk);

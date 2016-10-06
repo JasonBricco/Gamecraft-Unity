@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Assertions;
 using System.Collections.Generic;
-	
+
 public class FluidSimulator : ScriptableObject, IUpdatable
 {
 	public const int MinFluidLevel = 1;
@@ -67,10 +68,12 @@ public class FluidSimulator : ScriptableObject, IUpdatable
 		Index curIndex = new Index(blockInst.x, blockInst.y, blockInst.z);
 		int fluidLevel = blockInst.block.FluidLevel;
 
-		bool success = FlowIfPossible(blockInst.x, blockInst.y - 1, blockInst.z, curIndex, MaxFluidLevel);
+		// Flowing fluid reduces the fluid level by 1. Add 1 to MaxFluidLevel so that when we flow fluid 
+		// downward, it remains at the max level.
+		bool success = FlowIfPossible(blockInst.x, blockInst.y - 1, blockInst.z, curIndex, MaxFluidLevel + 1, true);
 		if (success) return;
 
-		if (fluidLevel == 1) return;
+		if (fluidLevel <= MinFluidLevel) return;
 
 		FlowIfPossible(blockInst.x - 1, blockInst.y, blockInst.z, curIndex, fluidLevel);
 		FlowIfPossible(blockInst.x + 1, blockInst.y, blockInst.z, curIndex, fluidLevel);
@@ -83,7 +86,7 @@ public class FluidSimulator : ScriptableObject, IUpdatable
 		Index curIndex = new Index(blockInst.x, blockInst.y, blockInst.z);
 		int fluidLevel = blockInst.block.FluidLevel;
 
-		if (fluidLevel == 1) return;
+		if (fluidLevel <= MinFluidLevel) return;
 
 		UnflowIfPossible(blockInst.x, blockInst.y - 1, blockInst.z, curIndex, fluidLevel + 1);
 		UnflowIfPossible(blockInst.x - 1, blockInst.y, blockInst.z, curIndex, fluidLevel);
@@ -92,14 +95,24 @@ public class FluidSimulator : ScriptableObject, IUpdatable
 		UnflowIfPossible(blockInst.x, blockInst.y, blockInst.z + 1, curIndex, fluidLevel);
 	}
 		
-	private static bool FlowIfPossible(int nX, int nY, int nZ, Index curIndex, int fluidLevel)
+	private static bool FlowIfPossible(int nX, int nY, int nZ, Index curIndex, int fluidLevel, bool down = false)
 	{
 		if (!Map.IsInMap(nX, nY, nZ)) return false;
 
 		Block neighbor = Map.GetBlock(nX, nY, nZ);
 		bool canFlow = false;
 
-		canFlow = neighbor.IsFluid() ? neighbor.FluidLevel < fluidLevel - 1 : neighbor.AllowOverwrite();
+		if (down)
+		{
+			if (neighbor.IsFluid())
+			{
+				if (neighbor.FluidLevel < MaxFluidLevel)
+					canFlow = true;
+				else return true;
+			}
+			else canFlow = neighbor.AllowOverwrite();
+		}
+		else canFlow = neighbor.IsFluid() ? neighbor.FluidLevel < fluidLevel - 1 : neighbor.AllowOverwrite();
 
 		if (canFlow)
 		{
@@ -140,11 +153,20 @@ public class FluidSimulator : ScriptableObject, IUpdatable
 		Block frontBlock = Map.GetBlockSafe(x, y, z + 1);
 		Block topBlock = Map.GetBlock(x, y + 1, z);
 
-		if (leftBlock.IsFluid()) FlowIfPossible(x, y, z, index, leftBlock.FluidLevel);
-		if (rightBlock.IsFluid()) FlowIfPossible(x, y, z, index, rightBlock.FluidLevel);
-		if (backBlock.IsFluid()) FlowIfPossible(x, y, z, index, backBlock.FluidLevel);
-		if (frontBlock.IsFluid()) FlowIfPossible(x, y, z, index, frontBlock.FluidLevel);
-		if (topBlock.IsFluid()) FlowIfPossible(x, y, z, index, topBlock.FluidLevel);
+		if (leftBlock.IsFluid() && leftBlock.FluidLevel > MinFluidLevel) 
+			FlowIfPossible(x, y, z, index, leftBlock.FluidLevel);
+		
+		if (rightBlock.IsFluid() && rightBlock.FluidLevel > MinFluidLevel) 
+			FlowIfPossible(x, y, z, index, rightBlock.FluidLevel);
+		
+		if (backBlock.IsFluid() && backBlock.FluidLevel > MinFluidLevel) 
+			FlowIfPossible(x, y, z, index, backBlock.FluidLevel);
+		
+		if (frontBlock.IsFluid() && frontBlock.FluidLevel > MinFluidLevel) 
+			FlowIfPossible(x, y, z, index, frontBlock.FluidLevel);
+		
+		if (topBlock.IsFluid() && topBlock.FluidLevel > MinFluidLevel) 
+			FlowIfPossible(x, y, z, index, topBlock.FluidLevel);
 	}
 		
 	private void QueueBlocksForFlowing()

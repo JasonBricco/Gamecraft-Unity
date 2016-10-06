@@ -295,6 +295,9 @@ public struct Block
 		case BlockID.TallGrass:
 			return true;
 
+		case BlockID.Water:
+			return FluidLevel < FluidSimulator.MaxFluidLevel;
+
 		default:
 			return false;
 		}

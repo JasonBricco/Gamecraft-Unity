@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 public struct PreparedMeshInfo
 {
-	public MeshData data;
+	public MeshManager data;
 	public Chunk chunk;
 
-	public PreparedMeshInfo(MeshData data, Chunk chunk)
+	public PreparedMeshInfo(MeshManager data, Chunk chunk)
 	{
 		this.data = data;
 		this.chunk = chunk;
@@ -22,7 +22,8 @@ public sealed class Chunk
 	private Vector3i position;
 	private Vector3 fPosition;
 
-	private Mesh[] meshes = new Mesh[MeshData.MeshCount];
+	private Mesh[] meshes = new Mesh[MeshManager.MeshCount];
+	private MeshManager meshManager = new MeshManager();
 
 	public Vector3i Position { get { return position; } }
 	public int X { get { return position.x; } }
@@ -48,9 +49,7 @@ public sealed class Chunk
 	private void BuildMeshAsync(object data)
 	{	
 		try
-		{
-			MeshData meshData = new MeshData();
-			
+		{			
 			int wX = X, wZ = Z;
 
 			for (int z = wZ; z < wZ + Chunk.Size; z++)
@@ -62,12 +61,12 @@ public sealed class Chunk
 						Block block = Map.GetBlock(x, y, z);
 
 						if (block.ID != BlockID.Air)
-							block.Build(x, y, z, meshData);
+							block.Build(x, y, z, meshManager.GetData(block.MeshIndex()));
 					}
 				}
 			}
 			
-			PreparedMeshInfo info = new PreparedMeshInfo(meshData, this);
+			PreparedMeshInfo info = new PreparedMeshInfo(meshManager, this);
 			ChunkManager.ProcessMeshData(info);
 		}
 		catch (System.Exception e)
@@ -90,7 +89,7 @@ public sealed class Chunk
 	{
 		for (int i = 0; i < meshes.Length; i++)
 		{
-			if (meshes[i].vertexCount > 0)
+			if (meshes[i] != null)
 				Graphics.DrawMesh(meshes[i], fPosition, Quaternion.identity, MaterialManager.GetMaterial(i), 0);
 		}
 	}

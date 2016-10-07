@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class ChunkManager : ScriptableObject, IUpdatable
 {
-	private static Chunk[,] chunks = new Chunk[Map.WidthChunks, Map.WidthChunks];
+	private static Chunk[] chunks = new Chunk[Map.WidthChunks * Map.WidthChunks];
 	private static Queue<PreparedMeshInfo> preparedMeshes = new Queue<PreparedMeshInfo>(256);
 
 	private static Queue<Chunk> chunksToUpdate = new Queue<Chunk>(8);
@@ -12,10 +12,10 @@ public class ChunkManager : ScriptableObject, IUpdatable
 	{
 		Updater.Register(this);
 
-		for (int x = 0; x < chunks.GetLength(0); x++)
+		for (int z = 0; z < Map.WidthChunks; z++)
 		{
-			for (int z = 0; z < chunks.GetLength(1); z++)
-				chunks[x, z] = new Chunk(x * Chunk.Size, z * Chunk.Size);
+			for (int x = 0; x < Map.WidthChunks; x++)
+				chunks[z * Map.WidthChunks + x] = new Chunk(x * Chunk.Size, z * Chunk.Size);
 		}
 	}
 
@@ -25,15 +25,14 @@ public class ChunkManager : ScriptableObject, IUpdatable
 		{
 			PreparedMeshInfo info = preparedMeshes.Dequeue();
 
-			for (int i = 0; i < MeshData.MeshCount; i++)
+			for (int i = 0; i < MeshManager.MeshCount; i++)
 				info.chunk.SetMesh(info.data.GetMesh(i), i);
+
+			info.data.Reset();
 		}
 
-		for (int x = 0; x < chunks.GetLength(0); x++)
-		{
-			for (int z = 0; z < chunks.GetLength(1); z++)
-				chunks[x, z].DrawMeshes();
-		}
+		for (int c = 0; c < chunks.Length; c++)
+			chunks[c].DrawMeshes();
 	}
 
 	public static Chunk GetChunk(int worldX, int worldZ)
@@ -41,22 +40,22 @@ public class ChunkManager : ScriptableObject, IUpdatable
 		if (!Map.IsInMap(worldX, worldZ)) 
 			return null;
 		
-		return chunks[ToChunkX(worldX), ToChunkZ(worldZ)];
+		return chunks[ToChunkZ(worldZ) * Map.WidthChunks + ToChunkX(worldX)];
 	}
 
 	public static Chunk GetChunkFast(int worldX, int worldZ)
 	{
-		return chunks[ToChunkX(worldX), ToChunkZ(worldZ)];
+		return chunks[ToChunkZ(worldZ) * Map.WidthChunks + ToChunkX(worldX)];
 	}
 
 	public static void BuildChunks()
 	{
 		List<Chunk> sortedChunks = new List<Chunk>(256);
 
-		for (int x = 0; x < chunks.GetLength(0); x++)
+		for (int x = 0; x < Map.WidthChunks; x++)
 		{
-			for (int z = 0; z < chunks.GetLength(1); z++)
-				sortedChunks.Add(chunks[x, z]);
+			for (int z = 0; z < Map.WidthChunks; z++)
+				sortedChunks.Add(chunks[z * Map.WidthChunks + x]);
 		}
 		
 		Vector3i playerPos = new Vector3i(Camera.main.transform.position);

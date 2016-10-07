@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class CollisionMeshData
+public sealed class CollisionMeshData
 {
 	private List<Vector3> vertices = new List<Vector3>();
 	private List<int> triangles = new List<int>();

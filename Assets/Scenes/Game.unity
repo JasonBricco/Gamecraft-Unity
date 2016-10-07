@@ -590,21 +590,6 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 106817386}
---- !u!1 &127047825 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 100000, guid: 16d3b80fa4c434083a428c995d7c6543, type: 2}
-  m_PrefabInternal: {fileID: 1268576721}
---- !u!114 &127047826
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 127047825}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23568fbfb44594579ae0463dd67dc5c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &132396947
 GameObject:
   m_ObjectHideFlags: 0
@@ -1023,9 +1008,10 @@ GameObject:
   - 114: {fileID: 165440426}
   - 114: {fileID: 165440432}
   - 114: {fileID: 165440433}
+  - 114: {fileID: 165440428}
   m_Layer: 0
   m_Name: Engine
-  m_TagString: Untagged
+  m_TagString: Engine
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -1051,6 +1037,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9a9faa13347a744fa8d288e2b1cf7857, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &165440428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 165440425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ab29bf9d82e74c0eabbfbacee9262c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &165440432
@@ -9268,9 +9265,9 @@ GameObject:
   - 223: {fileID: 1862648548}
   - 114: {fileID: 1862648547}
   - 114: {fileID: 1862648546}
-  - 114: {fileID: 1862648543}
   - 114: {fileID: 1862648550}
   - 114: {fileID: 1862648544}
+  - 114: {fileID: 1862648543}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Canvas
@@ -9281,8 +9278,7 @@ GameObject:
 --- !u!114 &1862648543
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11495436, guid: 17360bcf2b2ac47ce9e18cf6a740df82,
-    type: 2}
+  m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1862648542}
   m_Enabled: 1

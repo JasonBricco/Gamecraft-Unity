@@ -15,6 +15,7 @@ public static class Map
 	public const int WidthChunks = Size / Chunk.Size;
 	public const int SeaLevel = 50;
 	public const int Radius = Size / 2;
+	public const float Gravity = -30.0f;
 
 	private static int generatorID;
 	

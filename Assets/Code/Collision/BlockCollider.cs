@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class BlockCollider : MonoBehaviour 
+public sealed class BlockCollider : MonoBehaviour 
 {
 	[SerializeField] private BoxCollider box;
 	[SerializeField] private MeshCollider meshCol;

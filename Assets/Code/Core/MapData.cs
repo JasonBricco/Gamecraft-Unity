@@ -11,7 +11,7 @@ public class SerializableData
 	public Vector3 playerPos = new Vector3(-1, -1, -1);
 }
 	
-public class MapData : ScriptableObject
+public sealed class MapData : ScriptableObject
 {
 	private static SerializableData data = new SerializableData();
 	private static string path;

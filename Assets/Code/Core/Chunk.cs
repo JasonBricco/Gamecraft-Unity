@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 public struct PreparedMeshInfo
 {
-	public MeshManager data;
+	public MeshDataGroup group;
 	public Chunk chunk;
 
-	public PreparedMeshInfo(MeshManager data, Chunk chunk)
+	public PreparedMeshInfo(MeshDataGroup data, Chunk chunk)
 	{
-		this.data = data;
+		this.group = data;
 		this.chunk = chunk;
 	}
 }
@@ -22,8 +22,7 @@ public sealed class Chunk
 	private Vector3i position;
 	private Vector3 fPosition;
 
-	private Mesh[] meshes = new Mesh[MeshManager.MeshCount];
-	private MeshManager meshManager = new MeshManager();
+	private Mesh[] meshes = new Mesh[MeshDataGroup.MeshCount];
 
 	public Vector3i Position { get { return position; } }
 	public int X { get { return position.x; } }
@@ -49,7 +48,9 @@ public sealed class Chunk
 	private void BuildMeshAsync(object data)
 	{	
 		try
-		{			
+		{
+			MeshDataGroup group = new MeshDataGroup();
+
 			int wX = X, wZ = Z;
 
 			for (int z = wZ; z < wZ + Chunk.Size; z++)
@@ -61,12 +62,12 @@ public sealed class Chunk
 						Block block = Map.GetBlock(x, y, z);
 
 						if (block.ID != BlockID.Air)
-							block.Build(x, y, z, meshManager.GetData(block.MeshIndex()));
+							block.Build(x, y, z, group.GetData(block.MeshIndex()));
 					}
 				}
 			}
 			
-			PreparedMeshInfo info = new PreparedMeshInfo(meshManager, this);
+			PreparedMeshInfo info = new PreparedMeshInfo(group, this);
 			ChunkManager.ProcessMeshData(info);
 		}
 		catch (System.Exception e)

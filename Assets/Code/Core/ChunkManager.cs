@@ -25,10 +25,8 @@ public class ChunkManager : ScriptableObject, IUpdatable
 		{
 			PreparedMeshInfo info = preparedMeshes.Dequeue();
 
-			for (int i = 0; i < MeshManager.MeshCount; i++)
-				info.chunk.SetMesh(info.data.GetMesh(i), i);
-
-			info.data.Reset();
+			for (int i = 0; i < MeshDataGroup.MeshCount; i++)
+				info.chunk.SetMesh(info.group.GetMesh(i), i);
 		}
 
 		for (int c = 0; c < chunks.Length; c++)
@@ -91,7 +89,7 @@ public class ChunkManager : ScriptableObject, IUpdatable
 
 	private static void QueueChunkIfNecessary(Chunk chunk)
 	{
-		if (chunk != null && !chunk.flaggedForUpdate)
+		if (!chunk.flaggedForUpdate && chunk != null)
 		{
 			chunk.flaggedForUpdate = true;
 			chunksToUpdate.Enqueue(chunk);

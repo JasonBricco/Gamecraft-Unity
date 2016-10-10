@@ -3,48 +3,49 @@ using System.Collections;
 
 public sealed class Player : Entity, IUpdatable
 {
-	private Block prevLegsBlock;
-	private Block prevHeadBlock;
-
 	private Vector3 spawnPoint;
 
 	private float canFly = 0.0f;
 	private float jumpVel = 15.0f;
 	private float flyThrust = 40.0f;
 
-	private void Awake()
+	public override void Init(EntityManager manager, int ID)
 	{
-		Init();
+		base.Init(manager, ID);
 
 		speed = 50.0f;
+		SetFlag(EntityFlags.Friendly);
 
-		EventManager.OnGameEvent += (type) =>
-		{
-			switch (type)
-			{
-			case GameEventType.BeginPlay:
-				Spawn();
-				break;
-				
-			case GameEventType.SaveWorld:
-				MapData.GetData().playerPos = transform.position;
-				break;
-			}
-		};
-
-		EventManager.OnCommand += (command, args) => 
-		{
-			if (command == CommandType.Teleport)
-			{
-				int x = Mathf.Clamp(int.Parse(args[1]), 0, 511);
-				int y = Mathf.Clamp(int.Parse(args[2]), 0, 255);
-				int z = Mathf.Clamp(int.Parse(args[3]), 0, 511);
-
-				transform.position = new Vector3(x, y, z);
-			}
-		};
+		EventManager.OnGameEvent += GameEventHandler;
+		EventManager.OnCommand += CommandHandler;
 
 		Updater.Register(this);
+	}
+
+	private void GameEventHandler(GameEventType type)
+	{
+		switch (type)
+		{
+		case GameEventType.BeginPlay:
+			Spawn();
+			break;
+
+		case GameEventType.SaveWorld:
+			MapData.GetData().playerPos = transform.position;
+			break;
+		}
+	}
+
+	private void CommandHandler(CommandType command, string[] args)
+	{
+		if (command == CommandType.Teleport)
+		{
+			int x = Mathf.Clamp(int.Parse(args[1]), 0, 511);
+			int y = Mathf.Clamp(int.Parse(args[2]), 0, 255);
+			int z = Mathf.Clamp(int.Parse(args[3]), 0, 511);
+
+			transform.position = new Vector3(x, y, z);
+		}
 	}
 
 	public void UpdateTick()
@@ -237,46 +238,11 @@ public sealed class Player : Entity, IUpdatable
 			return;
 		}
 
-		Vector3 spawn = TryFindLand();
+		Vector3 spawn = TryFindLand(Map.GetWorldCenter());
 
 		spawn.y += 0.45f;
 		transform.position = spawn;
 		spawnPoint = spawn;
-	}
-	
-	private Vector3 TryFindLand()
-	{
-		Vector3i? land = null;
-		Vector3i center = Map.GetWorldCenter();
-
-		for (int x = center.x - 20; x <= center.x + 20; x++)
-		{
-			for (int z = center.z - 20; z <= center.z + 20; z++)
-			{
-				int height = MapLight.GetRaySafe(x, z);
-				Block surface = Map.GetBlockSafe(x, height - 1, z);
-				
-				if (!surface.IsFluid())
-				{
-					Vector3i current = new Vector3i(x, height, z);
-
-					if (!land.HasValue)
-						land = current;
-					else
-					{
-						int dis = center.DistanceSquared(current);
-						int oldDis = center.DistanceSquared(land.Value);
-
-						if (dis < oldDis) land = current;
-					}
-				}
-			}
-		}
-
-		if (land.HasValue)
-			return land.Value.ToVector3();
-
-		return new Vector3(center.x, MapLight.GetRay(center.x, center.z), center.z);
 	}
 
 	public static int GetRotation()
@@ -291,24 +257,6 @@ public sealed class Player : Entity, IUpdatable
 			return Direction.Back;
 		else
 			return Direction.Left;
-	}
-
-	public void ProcessBlocksInside(Block legsBlock, Block headBlock)
-	{
-		if (legsBlock.ID != prevLegsBlock.ID)
-		{
-			prevLegsBlock.OnExit(false);
-			legsBlock.OnEnter(false);
-		}
-
-		if (headBlock.ID != prevHeadBlock.ID)
-		{
-			prevHeadBlock.OnExit(true);
-			headBlock.OnEnter(true);
-		}
-
-		prevLegsBlock = legsBlock;
-		prevHeadBlock = headBlock;
 	}
 
 	private void OnControllerColliderHit(ControllerColliderHit hit)

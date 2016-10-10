@@ -16,13 +16,13 @@ public struct HitInfo
 	}
 }
 
-public class PlayerInteraction : MonoBehaviour 
+public class MapInteraction : MonoBehaviour, IUpdatable 
 {
 	[SerializeField] private int editRange = 10;
 
 	private static BlockInstance currentBlock;
 	
-	private GameObject reticle;
+	private Transform reticle;
 	private Renderer reticleRenderer;
 
 	private Image selectedPanel;
@@ -53,10 +53,12 @@ public class PlayerInteraction : MonoBehaviour
 
 	private void Awake()
 	{
+		Updater.Register(this);
+
 		selectedPanel = UIStore.GetUI<Image>("SelectedBlockPanel");
 		selectedText = UIStore.GetUI<Text>("SelectedBlockText");
 
-		reticle = (GameObject)Instantiate((GameObject)Resources.Load("Prefabs/Reticle"), Vector3.zero, Quaternion.identity);
+		reticle = new Prefab("Prefabs/Reticle").Instantiate().transform;
 		reticleRenderer = reticle.GetComponent<Renderer>();
 	
 		currentAdd = AddBlock;
@@ -68,7 +70,7 @@ public class PlayerInteraction : MonoBehaviour
 		};
 	}
 
-	private void Update()
+	public void UpdateTick()
 	{
 		if (Engine.CurrentState != GameState.Playing) return;
 
@@ -100,7 +102,7 @@ public class PlayerInteraction : MonoBehaviour
 			Vector3i pos = info.hitPos;
 			currentBlock = new BlockInstance(Map.GetBlock(pos.x, pos.y, pos.z), pos.x, pos.y, pos.z);
 			EnableReticle();
-			reticle.transform.position = info.hitPos;
+			reticle.position = info.hitPos;
 		}
 		else
 			DisableReticle();

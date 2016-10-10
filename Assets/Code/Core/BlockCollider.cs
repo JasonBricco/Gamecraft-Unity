@@ -1,5 +1,15 @@
 ﻿using UnityEngine;
 
+public enum CollisionType
+{
+	None,
+	Cube,
+	SlopeLeft,
+	SlopeRight,
+	SlopeBack,
+	SlopeFront
+}
+
 public sealed class BlockCollider : MonoBehaviour 
 {
 	[SerializeField] private BoxCollider box;

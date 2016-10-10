@@ -22,12 +22,12 @@ public class ShowBlockInfo : MonoBehaviour
 		switch (info)
 		{
 		case DebugInfo.ID:
-			Block block = PlayerInteraction.CurrentBlock.block;
+			Block block = MapInteraction.CurrentBlock.block;
 			label.text = "Block: " + (int)block.ID + " (" + block.Name() + "), Data: " + block.data;
 			break;
 
 		case DebugInfo.Position:
-			BlockInstance blockInst = PlayerInteraction.CurrentBlock;
+			BlockInstance blockInst = MapInteraction.CurrentBlock;
 			label.text = "Position: " + blockInst.x + " " + blockInst.y + " " + blockInst.z;
 			break;
 		}

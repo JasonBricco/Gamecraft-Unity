@@ -73,17 +73,26 @@ public class Environment : MonoBehaviour
 	{
 		rain = transform.Find("Rain").gameObject;
 
-		Ambient = dayLight;
-		SkyColor = daySky;
+		EventManager.OnGameEvent += GameEventHandler;
+		EventManager.OnCommand += CommandHandler;
+	}
 
-		EventManager.OnCommand += (command, args) => 
+	private void GameEventHandler(GameEventType type)
+	{
+		if (type == GameEventType.BeginPlay)
 		{
-			if (command == CommandType.ChangeTime)
-			{
-				minutes = int.Parse(args[1]) % dayLength;
-				ForceFadeToTime(1.0f);
-			}
-		};
+			Ambient = dayLight;
+			SkyColor = daySky;
+		}
+	}
+
+	private void CommandHandler(CommandType command, string[] args)
+	{
+		if (command == CommandType.ChangeTime)
+		{
+			minutes = int.Parse(args[1]) % dayLength;
+			ForceFadeToTime(1.0f);
+		}
 	}
 
 	private void Update()

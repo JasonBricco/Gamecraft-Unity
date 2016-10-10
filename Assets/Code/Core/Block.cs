@@ -497,7 +497,7 @@ public struct Block
 			{
 				ScreenFader.SetFade(1.0f, 1.0f, 1.0f, 0.5f);
 				SetShaderCulling(false);
-				PlayerInteraction.DisallowReticle();
+				MapInteraction.DisallowReticle();
 			} break;
 
 		case BlockID.Water:
@@ -505,7 +505,7 @@ public struct Block
 			{
 				ScreenFader.SetFade(0.0f, 0.0f, 1.0f, 0.3f);
 				SetShaderCulling(false);
-				PlayerInteraction.DisallowReticle();
+				MapInteraction.DisallowReticle();
 			} break;
 
 		default:
@@ -522,7 +522,7 @@ public struct Block
 			{
 				ScreenFader.SetFade(0.0f, 0.0f, 0.0f, 0.0f);
 				SetShaderCulling(true);
-				PlayerInteraction.AllowReticle();
+				MapInteraction.AllowReticle();
 			} break;
 
 		case BlockID.Water:
@@ -530,7 +530,7 @@ public struct Block
 			{
 				ScreenFader.SetFade(0.0f, 0.0f, 0.0f, 0.0f);
 				SetShaderCulling(true);
-				PlayerInteraction.AllowReticle();
+				MapInteraction.AllowReticle();
 			} break;
 
 		default:

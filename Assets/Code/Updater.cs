@@ -10,6 +10,11 @@ public class Updater : MonoBehaviour
 		updateList.Add(item);
 	}
 
+	public static void Unregister(IUpdatable item)
+	{
+		updateList.Remove(item);
+	}
+
 	private void Update()
 	{
 		for (int i = 0; i < updateList.Count; i++)

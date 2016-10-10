@@ -26,6 +26,7 @@ public class Engine : MonoBehaviour, IUpdatable
 		ScriptableObject.CreateInstance<Commands>();
 		ScriptableObject.CreateInstance<ThreadManager>();
 		ScriptableObject.CreateInstance<ChunkManager>();
+		ScriptableObject.CreateInstance<EntityManager>();
 
 		EventManager.OnStateChange += (state) => 
 		{

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class ShowDirection : MonoBehaviour 
+public sealed class ShowDirection : MonoBehaviour 
 {
 	private Text label;
 

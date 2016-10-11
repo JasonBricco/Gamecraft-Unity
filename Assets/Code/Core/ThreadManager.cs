@@ -5,7 +5,7 @@ using System.Threading;
 
 public delegate void ThreadWork(object data);
 
-public class ThreadManager : ScriptableObject, IUpdatable 
+public sealed class ThreadManager : ScriptableObject, IUpdatable 
 {
 	private static Thread worker;
 

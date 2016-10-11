@@ -4,7 +4,7 @@ using System.Collections;
 using System.Text;
 using System.IO;
 
-public class CountLines: EditorWindow 
+public sealed class CountLines: EditorWindow 
 {
 	private StringBuilder strStats = new StringBuilder();
 	private Vector2 scrollPosition = new Vector2(0, 0);

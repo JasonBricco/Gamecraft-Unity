@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class Encoder
+public sealed class Encoder
 {
 	public static void Encode(SerializableData data) 
 	{ 

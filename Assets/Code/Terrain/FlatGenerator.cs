@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class FlatGenerator : TerrainGenerator 
+public sealed class FlatGenerator : TerrainGenerator 
 {
 	public override void Initialize(int worldX, int worldZ)
 	{

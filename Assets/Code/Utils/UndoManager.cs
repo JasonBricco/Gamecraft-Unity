@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class Modification
+public sealed class Modification
 {
 	public List<BlockInstance> prevBlocks = new List<BlockInstance>();
 	public List<BlockInstance> newBlocks = new List<BlockInstance>();
@@ -13,7 +13,7 @@ public class Modification
 	}
 }
 
-public class UndoManager 
+public sealed class UndoManager 
 {
 	private static UndoStack<Modification> undoStack = new UndoStack<Modification>(5);
 	private static UndoStack<Modification> redoStack = new UndoStack<Modification>(5);

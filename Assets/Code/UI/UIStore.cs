@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class UIStore : MonoBehaviour 
+public sealed class UIStore : MonoBehaviour 
 {
 	private static Dictionary<string, GameObject> items = new Dictionary<string, GameObject>();
 

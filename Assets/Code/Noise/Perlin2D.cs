@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Perlin2D
+public static class Perlin2D
 {
 	private static int seed;
 	

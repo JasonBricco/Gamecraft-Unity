@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Text;
 
-public class ErrorHandling : ScriptableObject
+public sealed class ErrorHandling : ScriptableObject
 {
 	private static string dataPath;
 

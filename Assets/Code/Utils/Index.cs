@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System;
 
-public class Index : IEquatable<Index>
+public struct Index : IEquatable<Index>
 {
-	private int value = 0;
+	private int value;
 
 	public Index(int x, int y, int z)
 	{

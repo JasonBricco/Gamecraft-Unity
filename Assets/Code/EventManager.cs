@@ -11,7 +11,7 @@ public enum GameEventType
 	GeneratingIsland
 }
 
-public class EventManager : MonoBehaviour
+public sealed class EventManager : MonoBehaviour
 {	
 	public delegate void GameEvent(GameEventType type);
 	public static event GameEvent OnGameEvent;

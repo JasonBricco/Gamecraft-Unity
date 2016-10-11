@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class ScreenFader : MonoBehaviour 
+public sealed class ScreenFader : MonoBehaviour 
 {
 	[SerializeField] private Material fadeMaterial;
 	private static Color fadeColor = new Color(0.0f, 0.0f, 0.0f, 0.0f);

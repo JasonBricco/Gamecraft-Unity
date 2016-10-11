@@ -9,7 +9,7 @@ public enum GameState
 	Playing
 }
 
-public class Engine : MonoBehaviour, IUpdatable
+public sealed class Engine : MonoBehaviour, IUpdatable
 {	
 	private static GameState currentState;
 	private static bool signalQuit = false;

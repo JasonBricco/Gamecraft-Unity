@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class UndoStack<T>
+public sealed class UndoStack<T>
 {
 	private List<T> items = new List<T>();
 	private int limit;

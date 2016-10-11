@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class UIFader : MonoBehaviour
+public sealed class UIFader : MonoBehaviour
 {
 	private Queue<Graphic> graphicsToFade = new Queue<Graphic>();
 	private Queue<Graphic> graphicsToDisable = new Queue<Graphic>();

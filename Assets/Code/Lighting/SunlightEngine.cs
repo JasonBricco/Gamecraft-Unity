@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class SunlightEngine 
+public static class SunlightEngine 
 {
 	public static void ComputeRays(int worldX, int worldZ) 
 	{

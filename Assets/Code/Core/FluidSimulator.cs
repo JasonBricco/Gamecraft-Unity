@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.Assertions;
 using System.Collections.Generic;
 
-public class FluidSimulator : ScriptableObject, IUpdatable
+public sealed class FluidSimulator : ScriptableObject, IUpdatable
 {
 	public const int MinFluidLevel = 1;
 	public const int MaxFluidLevel = 5;

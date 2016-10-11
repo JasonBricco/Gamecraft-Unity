@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class Updater : MonoBehaviour 
+public sealed class Updater : MonoBehaviour 
 {
 	private static List<IUpdatable> updateList = new List<IUpdatable>();
 

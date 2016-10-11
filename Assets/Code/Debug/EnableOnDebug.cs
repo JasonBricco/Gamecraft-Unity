@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class EnableOnDebug : MonoBehaviour 
+public sealed class EnableOnDebug : MonoBehaviour 
 {
 	private void Awake()
 	{

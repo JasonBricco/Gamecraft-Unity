@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class WorldTypeUIData : MonoBehaviour 
+public sealed class WorldTypeUIData : MonoBehaviour 
 {
 	[SerializeField] private MainMenu menu;
 	[SerializeField] private int worldType;

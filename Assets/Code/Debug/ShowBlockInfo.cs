@@ -7,7 +7,7 @@ public enum DebugInfo
 	Position
 }
 
-public class ShowBlockInfo : MonoBehaviour 
+public sealed class ShowBlockInfo : MonoBehaviour 
 {
 	[SerializeField] private DebugInfo info;
 	private Text label;

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class NoiseArray2D 
+public sealed class NoiseArray2D 
 {	
 	private const int step = 8;
 	private Vector3i offset;

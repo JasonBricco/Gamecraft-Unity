@@ -16,7 +16,7 @@ public struct HitInfo
 	}
 }
 
-public class MapInteraction : MonoBehaviour, IUpdatable 
+public sealed class MapInteraction : MonoBehaviour, IUpdatable 
 {
 	[SerializeField] private int editRange = 10;
 

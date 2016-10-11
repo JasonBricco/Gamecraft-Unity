@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System;
 using System.Collections;
 
-public class MainMenu : MonoBehaviour 
+public sealed class MainMenu : MonoBehaviour 
 {
 	private Text percentText;
 

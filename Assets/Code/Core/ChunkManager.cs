@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class ChunkManager : ScriptableObject, IUpdatable
+public sealed class ChunkManager : ScriptableObject, IUpdatable
 {
 	private static Chunk[] chunks = new Chunk[Map.WidthChunks * Map.WidthChunks];
 	private static Queue<PreparedMeshInfo> preparedMeshes = new Queue<PreparedMeshInfo>(256);

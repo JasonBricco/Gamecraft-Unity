@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 
-public class Environment : MonoBehaviour 
+public sealed class Environment : MonoBehaviour 
 {
 	private const int SecondsPerMinute = 60;
 

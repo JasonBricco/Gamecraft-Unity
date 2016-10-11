@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Threading;
 
-public class MapLight
+public sealed class MapLight
 {
 	private static byte[,] rays = new byte[Map.Size, Map.Size];
 	private static byte[] lights = new byte[Map.Size * Map.Height * Map.Size];

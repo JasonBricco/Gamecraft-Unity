@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class CursorControl : ScriptableObject, IUpdatable
+public sealed class CursorControl : ScriptableObject, IUpdatable
 {
 	private Transform cursor;
 

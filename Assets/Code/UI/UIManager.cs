@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class UIManager : MonoBehaviour 
+public sealed class UIManager : MonoBehaviour 
 {
 	private GameObject mainMenuWindow;
 	private GameObject pauseWindow;

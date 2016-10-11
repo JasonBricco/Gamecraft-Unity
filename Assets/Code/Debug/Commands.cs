@@ -15,7 +15,7 @@ public enum CommandType
 	ToggleReticle
 }
 
-public class Commands : ScriptableObject, IUpdatable 
+public sealed class Commands : ScriptableObject, IUpdatable 
 {
 	private InputField command;
 	private Text error;

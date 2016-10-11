@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 
-public class Perlin3D 
+public static class Perlin3D 
 {
 	private const int GradientSizeTable = 256;
 	private static Vector3[] gradients = new Vector3[GradientSizeTable];

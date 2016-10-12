@@ -52,7 +52,7 @@ public sealed class MaterialManager : ScriptableObject
 		materials[2] = (Material)Resources.Load("Materials/Cutout");
 		materials[3] = (Material)Resources.Load("Materials/Transparent");
 
-		ErrorHandling.VerifyCollection(materials, "Materials");
+		Logger.VerifyCollection(materials, "Materials");
 
 		Shader sDiffuse = (Shader)Resources.Load("Shaders/Diffuse");
 		Shader sCutout = (Shader)Resources.Load("Shaders/Cutout");

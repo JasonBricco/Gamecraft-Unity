@@ -5,13 +5,13 @@ using System.Collections.Generic;
 public enum GameEventType 
 { 
 	BeginPlay,
-	SaveWorld,
+	Exit,
 	GenerateLight,
 	EnteringCommand,
 	GeneratingIsland
 }
 
-public sealed class EventManager : MonoBehaviour
+public sealed class Events : MonoBehaviour
 {	
 	public delegate void GameEvent(GameEventType type);
 	public static event GameEvent OnGameEvent;
@@ -21,6 +21,9 @@ public sealed class EventManager : MonoBehaviour
 
 	public delegate void StateEvent(GameState state);
 	public static event StateEvent OnStateChange;
+
+	public delegate void SaveEvent(SerializableData data);
+	public static event SaveEvent OnSave;
 
 	public static void SendGameEvent(GameEventType type)
 	{
@@ -35,5 +38,10 @@ public sealed class EventManager : MonoBehaviour
 	public static void SendStateEvent(GameState state)
 	{
 		if (OnStateChange != null) OnStateChange(state);
+	}
+
+	public static void SendSaveEvent(SerializableData data)
+	{
+		if (OnSave != null) OnSave(data);
 	}
 }

@@ -26,7 +26,7 @@ public sealed class BlockLightEngine
 		{
 			Vector3i next = pos + Vector3i.directions[i];
 			
-			if (Map.IsInMap(next.x, next.z))
+			if (Map.InBounds(next.x, next.z))
 				nodes.Enqueue(next);
 		}
 		
@@ -56,7 +56,7 @@ public sealed class BlockLightEngine
 			{
 				Vector3i nextPos = pos + Vector3i.directions[i];
 
-				if (Map.IsInMap(nextPos.x, nextPos.z))
+				if (Map.InBounds(nextPos.x, nextPos.z))
 				{
 					block = Map.GetBlock(nextPos.x, nextPos.y, nextPos.z);
 				
@@ -95,7 +95,7 @@ public sealed class BlockLightEngine
 			{
 				Vector3i nextPos = pos + Vector3i.directions[i];
 
-				if (Map.IsInMap(nextPos.x, nextPos.z))
+				if (Map.InBounds(nextPos.x, nextPos.z))
 				{
 					Block block = Map.GetBlock(nextPos.x, nextPos.y, nextPos.z);
 

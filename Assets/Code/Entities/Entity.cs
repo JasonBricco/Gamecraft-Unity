@@ -148,4 +148,17 @@ public class Entity : MonoBehaviour, IEquatable<Entity>
 
 		return new Vector3(center.x, MapLight.GetRay(center.x, center.z), center.z);
 	}
+
+	protected void ClampToMap()
+	{
+		Vector3 pos = t.position;
+
+		if (pos.y < 0.0f)
+		{
+			Kill();
+			return;
+		}
+
+		t.position = new Vector3(Mathf.Clamp(pos.x, 0.0f, Map.Size - 1), Mathf.Min(pos.y, 512.0f), Mathf.Clamp(pos.z, 0.0f, Map.Size - 1));
+	}
 }

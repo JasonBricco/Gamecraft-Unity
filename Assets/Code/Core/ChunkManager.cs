@@ -35,7 +35,7 @@ public sealed class ChunkManager : ScriptableObject, IUpdatable
 
 	public static Chunk GetChunk(int worldX, int worldZ)
 	{
-		if (!Map.IsInMap(worldX, worldZ)) 
+		if (!Map.InBounds(worldX, worldZ)) 
 			return null;
 		
 		return chunks[ToChunkZ(worldZ) * Map.WidthChunks + ToChunkX(worldX)];
@@ -89,7 +89,7 @@ public sealed class ChunkManager : ScriptableObject, IUpdatable
 
 	private static void QueueChunkIfNecessary(Chunk chunk)
 	{
-		if (!chunk.flaggedForUpdate && chunk != null)
+		if (chunk != null && !chunk.flaggedForUpdate)
 		{
 			chunk.flaggedForUpdate = true;
 			chunksToUpdate.Enqueue(chunk);

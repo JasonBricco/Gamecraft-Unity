@@ -9,22 +9,22 @@ public sealed class MainMenu : MonoBehaviour
 
 	private void Start()
 	{
+		MapData.Load();
+
 		percentText = UIStore.GetUI<Text>("GenerationPercent");
 		Engine.ChangeState(GameState.MainMenu);
 	}
 
 	public void TryPlay(GameObject worldTypesWindow)
 	{
-		bool dataLoaded = MapData.Load();
-
-		if (dataLoaded) Engine.BeginPlay();
+		if (MapData.LoadedData != null) SetTypeAndBuild(MapData.LoadedData.genID);
 		else worldTypesWindow.SetActive(true);
 	}
 
 	public void SetTypeAndBuild(int type)
 	{
 		Map.SetWorldType(type);
-		EventManager.SendGameEvent(GameEventType.GeneratingIsland);
+		Events.SendGameEvent(GameEventType.GeneratingIsland);
 		StartCoroutine(FillPercentage());
 		Map.GenerateAllTerrain();
 	}

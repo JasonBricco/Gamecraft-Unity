@@ -20,7 +20,7 @@ public sealed class Engine : MonoBehaviour, IUpdatable
 
 		ScriptableObject.CreateInstance<MapData>();
 		ScriptableObject.CreateInstance<MaterialManager>();
-		ScriptableObject.CreateInstance<ErrorHandling>();
+		ScriptableObject.CreateInstance<Logger>();
 		ScriptableObject.CreateInstance<CursorControl>();
 		ScriptableObject.CreateInstance<FluidSimulator>();
 		ScriptableObject.CreateInstance<Commands>();
@@ -28,7 +28,7 @@ public sealed class Engine : MonoBehaviour, IUpdatable
 		ScriptableObject.CreateInstance<ChunkManager>();
 		ScriptableObject.CreateInstance<EntityManager>();
 
-		EventManager.OnStateChange += (state) => 
+		Events.OnStateChange += (state) => 
 		{
 			if (state == GameState.Paused)
 				System.GC.Collect();
@@ -48,7 +48,7 @@ public sealed class Engine : MonoBehaviour, IUpdatable
 	public static void ChangeState(GameState newState)
 	{
 		currentState = newState;
-		EventManager.SendStateEvent(newState);
+		Events.SendStateEvent(newState);
 	}
 
 	public void UpdateTick()
@@ -66,6 +66,6 @@ public sealed class Engine : MonoBehaviour, IUpdatable
 
 	private void OnApplicationQuit()
 	{
-		EventManager.SendGameEvent(GameEventType.SaveWorld);
+		Events.SendGameEvent(GameEventType.Exit);
 	}
 }

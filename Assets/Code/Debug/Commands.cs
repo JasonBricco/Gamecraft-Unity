@@ -35,7 +35,7 @@ public sealed class Commands : ScriptableObject, IUpdatable
 		UIStore.GetUI<Button>("CommandReadyButton").onClick.AddListener(ProcessCommand);
 		UIStore.GetUI<Button>("CancelCommandButton").onClick.AddListener(EndCommand);
 
-		EventManager.OnCommand += (input, args) => { EndCommand(); };
+		Events.OnCommand += (input, args) => { EndCommand(); };
 
 		AddFunctions();
 	}
@@ -49,7 +49,7 @@ public sealed class Commands : ScriptableObject, IUpdatable
 
 		if (Input.GetKeyDown(KeyCode.Slash))
 		{
-			EventManager.SendGameEvent(GameEventType.EnteringCommand);
+			Events.SendGameEvent(GameEventType.EnteringCommand);
 			active = true;
 			command.Select();
 			command.ActivateInputField();
@@ -121,7 +121,7 @@ public sealed class Commands : ScriptableObject, IUpdatable
 			return;
 		}
 
-		EventManager.SendCommand(CommandType.WalkSpeed, args);
+		Events.SendCommand(CommandType.WalkSpeed, args);
 	}
 
 	private void ChangeFlyingSpeed()
@@ -138,7 +138,7 @@ public sealed class Commands : ScriptableObject, IUpdatable
 			return;
 		}
 		
-		EventManager.SendCommand(CommandType.FlySpeed, args);
+		Events.SendCommand(CommandType.FlySpeed, args);
 	}
 
 	private void Teleport()
@@ -155,7 +155,7 @@ public sealed class Commands : ScriptableObject, IUpdatable
 			return;
 		}
 		
-		EventManager.SendCommand(CommandType.Teleport, args);
+		Events.SendCommand(CommandType.Teleport, args);
 	}
 
 	private void ChangeTime()
@@ -178,7 +178,7 @@ public sealed class Commands : ScriptableObject, IUpdatable
 			return;
 		}
 
-		EventManager.SendCommand(CommandType.ChangeTime, args);
+		Events.SendCommand(CommandType.ChangeTime, args);
 	}
 
 	private void ToggleDebugInfo()
@@ -191,7 +191,7 @@ public sealed class Commands : ScriptableObject, IUpdatable
 
 		GameObject debug = UIStore.GetObject("Debug");
 		debug.SetActive(!debug.activeSelf);
-		EventManager.SendCommand(CommandType.ShowDebug, args);
+		Events.SendCommand(CommandType.ShowDebug, args);
 	}
 
 	private void ToggleReticle()
@@ -202,7 +202,7 @@ public sealed class Commands : ScriptableObject, IUpdatable
 			return;
 		}
 
-		EventManager.SendCommand(CommandType.ToggleReticle, args);
+		Events.SendCommand(CommandType.ToggleReticle, args);
 	}
 
 	private bool IsValidNumber(string val)

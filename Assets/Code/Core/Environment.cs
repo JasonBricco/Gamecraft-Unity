@@ -73,8 +73,8 @@ public sealed class Environment : MonoBehaviour
 	{
 		rain = transform.Find("Rain").gameObject;
 
-		EventManager.OnGameEvent += GameEventHandler;
-		EventManager.OnCommand += CommandHandler;
+		Events.OnGameEvent += GameEventHandler;
+		Events.OnCommand += CommandHandler;
 	}
 
 	private void GameEventHandler(GameEventType type)

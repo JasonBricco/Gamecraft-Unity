@@ -2,6 +2,7 @@
 using UnityEngine.Events;
 using System.Collections.Generic;
 using System.Threading;
+using System.Diagnostics;
 
 public struct AdjacentBlocks
 {
@@ -10,33 +11,28 @@ public struct AdjacentBlocks
 
 public static class Map
 {
-	public const int Size = 512;
-	public const int Height = 128;
+	public const int SizeBits = 10, Size = 1 << SizeBits;
+	public const int Height = 128, SeaLevel = 50;
 	public const int WidthChunks = Size / Chunk.Size;
-	public const int SeaLevel = 50;
-	public const int Radius = Size / 2;
+	public const int Radius = Size / 4;
+	public const int SqRadius = Radius * Radius;
 	public const float Gravity = -30.0f;
 
-	private static int generatorID;
+	public static readonly Vector2i Center = new Vector2i(Size / 2, Size / 2);
+
+	public static int GenID { get; private set; }
 	
 	private static Block[] blocks = new Block[Height * Size * Size];
+
+	// Stores whether a chunk has been modified. If so, it will be saved to disk.
+	private static int[] modified = new int[WidthChunks * WidthChunks];
 
 	private static int numCompleted;
 	private static int total = WidthChunks * WidthChunks;
 
-	public static int GetBlockCount()
-	{
-		return blocks.Length;
-	}
-
-	public static Vector3i GetWorldCenter()
-	{
-		return new Vector3i(Radius, 0, Radius);
-	}
-
 	public static void SetWorldType(int ID)
 	{
-		generatorID = ID;
+		GenID = ID;
 	}
 
 	public static void GenerateAllTerrain()
@@ -49,6 +45,8 @@ public static class Map
 		
 		Vector3i pos = new Vector3i();
 
+		SerializableData loadedData = MapData.LoadedData;
+
 		for (int z = 0; z < WidthChunks; z++)
 		{
 			for (int x = 0; x < WidthChunks; x++)
@@ -56,7 +54,9 @@ public static class Map
 				pos.x = x;
 				pos.z = z;
 
-				ThreadPool.QueueUserWorkItem(GenerateTerrainSection, pos);
+				if (loadedData != null && loadedData.modified[z * WidthChunks + x] == 1)
+					ThreadPool.QueueUserWorkItem(DecodeTerrainSection);
+				else ThreadPool.QueueUserWorkItem(GenerateTerrainSection, pos);
 			}
 		}
 	}
@@ -67,16 +67,37 @@ public static class Map
 		{
 			Vector3i pos = (Vector3i)posObj;
 
-			TerrainGenerator.GetGenerator(generatorID).Initialize(pos.x * Chunk.Size, pos.z * Chunk.Size);
+			TerrainGenerator.GetGenerator(GenID).Generate(pos.x * Chunk.Size, pos.z * Chunk.Size);
 
 			numCompleted++;
 		}
 		catch (System.Exception e)
 		{
-			Debug.LogError("An error has occurred. See the error log for details.");
-			ErrorHandling.LogText("Error while building terrain.", e.Message, e.StackTrace);
+			Logger.Log("Error while building terrain.", e.Message, e.StackTrace);
 			Engine.SignalQuit();
 		}
+	}
+
+	private static void DecodeTerrainSection(object state)
+	{
+		#if false
+		SerializableData data = MapData.LoadedData;
+
+		int cur = 0;
+
+		for (int run = 0; run < data.countList.Count; run++)
+		{
+			for (int i = 0; i < data.countList[run]; i++)
+			{
+				ushort block = data.dataList[run];
+				Map.SetBlockDirect(cur, new Block((BlockID)(block >> 8), block));
+				cur++;
+			}
+		}
+
+		data.countList.Clear();
+		data.dataList.Clear();
+		#endif
 	}
 
 	public static float GetProgress(UnityAction callback)
@@ -86,7 +107,15 @@ public static class Map
 		if (numCompleted == total) 
 			callback();
 
+		TryForceComplete(callback);
 		return percent;
+	}
+
+	[Conditional("DEBUG")]
+	public static void TryForceComplete(UnityAction callback)
+	{
+		if (Input.GetKeyDown(KeyCode.Return))
+			callback();
 	}
 
 	public static Block GetBlock(int x, int y, int z)
@@ -102,33 +131,20 @@ public static class Map
 	public static Block GetBlockSafe(int x, int y, int z)
 	{
 		if (y >= Height) return new Block(BlockID.Air);
-		
-		if (!IsInMap(x, y, z))
-			return new Block(BlockID.Boundary);
+		if (y < 0 || !InBounds(x, z)) return new Block(BlockID.Boundary);
 		
 		return blocks[x + Size * (y + Height * z)];
 	}
 
 	public static void SetBlockSafe(int x, int y, int z, Block block)
 	{
-		if (y >= Height || !IsInMap(x, y, z)) return;
-
-		blocks[x + Size * (y + Height * z)] = block;
-	}
-
-	public static Block GetBlockDirect(int index)
-	{
-		return blocks[index];
-	}
-
-	public static void SetBlockDirect(int index, Block block)
-	{
-		blocks[index] = block;
+		if (InBounds(x, y, z))
+			blocks[x + Size * (y + Height * z)] = block;
 	}
 
 	public static void SetBlockAdvanced(int x, int y, int z, Block block, Vector3i normal, bool undo)
 	{
-		if (IsInMap(x, y, z))
+		if (InBounds(x, y, z))
 		{
 			if (!block.CanPlace(normal, x, y, z))
 				return;
@@ -146,7 +162,9 @@ public static class Map
 			else block.OnPlace(normal, x, y, z);
 
 			if (undo) UndoManager.RegisterAction(prevInst, newBlock);
+
 			SetBlock(x, y, z, block);
+			modified[ChunkManager.ToChunkZ(z) * WidthChunks + ChunkManager.ToChunkX(x)] = 1;
 			
 			MapLight.RecomputeLighting(x, y, z);
 		
@@ -167,7 +185,7 @@ public static class Map
 			int y = blockInst.y;
 			int z = blockInst.z;
 			
-			if (!IsInMap(x, y, z)) continue;
+			if (!InBounds(x, y, z)) continue;
 
 			if (!blockInst.block.CanPlace(Vector3i.zero, x, y, z))
 				continue;
@@ -184,6 +202,7 @@ public static class Map
 			if (undo) prevBlocks.Add(new BlockInstance(GetBlock(x, y, z), x, y, z));
 			
 			SetBlock(x, y, z, blocks[i].block);
+			modified[ChunkManager.ToChunkZ(z) * WidthChunks + ChunkManager.ToChunkX(x)] = 1;
 			
 			MapLight.RecomputeLighting(x, y, z);
 			ChunkManager.FlagChunkForUpdate(x, z);
@@ -221,20 +240,66 @@ public static class Map
 		return 0;
 	}
 
-	public static bool IsInMap(int x, int y, int z)
+	public static bool InBounds(int x, int y, int z)
 	{
-		if (x >= 0 && z >= 0 && y >= 0 && x < Size && z < Size && y < Height)
-			return true;
-		
-		return false;
+		return x >= 0 && z >= 0 && y >= 0 && x < Size && z < Size && y < Height;
 	}
 	
-	public static bool IsInMap(int x, int z)
+	public static bool InBounds(int x, int z)
 	{
-		if (x >= 0 && z >= 0 && x < Size && z < Size)
-			return true;
-		
-		return false;
+		return x >= 0 && z >= 0 && x < Size && z < Size;
+	}
+
+	public static void Encode(SerializableData data) 
+	{ 
+		data.modified = modified;
+
+		int i = 0;
+		int runCount = 0;
+		Block currentBlock = new Block(BlockID.Air);
+
+		for (int cZ = 0; cZ < modified.GetLength(1); cZ++)
+		{
+			for (int cX = 0; cX < modified.GetLength(0); cX++)
+			{
+				if (modified[cZ * WidthChunks + cX] != 1) continue;
+
+				Vector2i wPos = new Vector2i(cX * Chunk.Size, cZ * Chunk.Size);
+
+				for (int y = 0; y < Height; y++)
+				{
+					for (int z = wPos.z; z < wPos.z + Chunk.Size; z++)
+					{
+						for (int x = wPos.x; x < wPos.x + Chunk.Size; x++) 
+						{
+							Block nextBlock = GetBlock(x, y, z);
+
+							if (nextBlock.ID != currentBlock.ID || nextBlock.data != currentBlock.data) 
+							{
+								if (i != 0) 
+								{
+									data.countList.Add(runCount);
+									data.dataList.Add((ushort)((byte)currentBlock.ID << 8 | currentBlock.data));
+								}
+
+								runCount = 1;
+								currentBlock = nextBlock;
+							}
+							else
+								runCount++;
+
+							if (i == blocks.Length - 1) 
+							{
+								data.countList.Add(runCount);
+								data.dataList.Add((ushort)((byte)currentBlock.ID << 8 | currentBlock.data));
+							}
+
+							i++;
+						}
+					}
+				}
+			}
+		}
 	}
 }
 	

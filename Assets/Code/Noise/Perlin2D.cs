@@ -6,12 +6,11 @@ public static class Perlin2D
 	
 	public static void Initialize() 
 	{
-		SetRandomSeed();
-	}
+		Events.OnSave += (data) => { data.seed2D = seed; };
 
-	public static void SetRandomSeed()
-	{
-		seed = Random.Range(-5000, 5000);
+		if (MapData.LoadedData == null)
+			seed = Random.Range(-5000, 5000);
+		else seed = MapData.LoadedData.seed2D;
 	}
 
 	public static float Noise(float x, float y, float scale, float persistence, int octaves) 

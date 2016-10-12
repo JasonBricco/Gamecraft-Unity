@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public static class Voronoi
 {
@@ -11,21 +10,25 @@ public static class Voronoi
 
 	public static void Initialize() 
 	{
-		seed = UnityEngine.Random.Range(-5000, 5000);
+		Events.OnSave += (data) => { data.seed2D = seed; };
+
+		if (MapData.LoadedData == null)
+			seed = Random.Range(-5000, 5000);
+		else seed = MapData.LoadedData.voronoiSeed;
 	}
 
 	public static float Distance { get; private set; }
 
-	public static double GetValue(double x, double z, double frequency, double displacement, bool getDistance = false)
+	public static float GetValue(float x, float z, float frequency, float displacement, bool getDistance = false)
 	{
 		x *= frequency;
 		z *= frequency;
 		
 		var intX = (int)x;
 		var intZ = (int)z;
-		var maxDistance = 2147483647.0;
-		double seedCenterX = 0;
-		double seedCenterZ = 0;
+		var maxDistance = 2147483647.0f;
+		float seedCenterX = 0.0f;
+		float seedCenterZ = 0.0f;
 		
 		for (var zcu = intZ - 2; zcu <= intZ + 2; zcu++)
 		{
@@ -50,15 +53,15 @@ public static class Voronoi
 		{
 			var xDist = seedCenterX - x;
 			var zDist = seedCenterZ - z;
-			Distance = (float)(Math.Sqrt(xDist * xDist + zDist * zDist));
+			Distance = Mathf.Sqrt(xDist * xDist + zDist * zDist);
 		}
 		
-		return (displacement * ValueNoise((int)Math.Floor(seedCenterX), (int)Math.Floor(seedCenterZ), 0));
+		return (displacement * ValueNoise(Mathf.FloorToInt(seedCenterX), Mathf.FloorToInt(seedCenterZ), 0));
 	}
 
-	private static double ValueNoise(int x, int z, int seed)
+	private static float ValueNoise(int x, int z, int seed)
 	{
-		return 1.0 - (ValueNoiseInt(x, z, seed) / 1073741824.0);
+		return 1.0f - (ValueNoiseInt(x, z, seed) / 1073741824.0f);
 	}
 
 	private static long ValueNoiseInt(int x, int z, int seed)

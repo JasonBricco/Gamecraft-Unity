@@ -40,7 +40,7 @@ public sealed class UIManager : MonoBehaviour
 		blockWindow.SetActive(false);
 		mainMenuWindow.SetActive(true);
 
-		EventManager.OnStateChange += (state) => 
+		Events.OnStateChange += (state) => 
 		{
 			if (state == GameState.Paused || state == GameState.MainMenu)
 				cursor.SetActive(false);
@@ -52,7 +52,7 @@ public sealed class UIManager : MonoBehaviour
 			}
 		};
 
-		EventManager.OnGameEvent += (type) => 
+		Events.OnGameEvent += (type) => 
 		{
 			switch (type)
 			{

@@ -16,7 +16,7 @@ public sealed class MapLight
 
 	public static void GenerateAllLight()
 	{
-		EventManager.SendGameEvent(GameEventType.GenerateLight);
+		Events.SendGameEvent(GameEventType.GenerateLight);
 		numCompleted = 0;
 
 		Vector3i pos = new Vector3i();
@@ -49,14 +49,14 @@ public sealed class MapLight
 		catch (System.Exception e)
 		{
 			Debug.LogError("An error has occurred. See the error log for details.");
-			ErrorHandling.LogText("Error while generating lighting.", e.Message, e.StackTrace);
+			Logger.Log("Error while generating lighting.", e.Message, e.StackTrace);
 			Engine.SignalQuit();
 		}
 	}
 
 	private static void LightFinished()
 	{
-		EventManager.SendGameEvent(GameEventType.BeginPlay);
+		Events.SendGameEvent(GameEventType.BeginPlay);
 		Engine.ChangeState(GameState.Playing);
 		ChunkManager.BuildChunks();
 	}
@@ -79,7 +79,7 @@ public sealed class MapLight
 	
 	public static int GetRaySafe(int x, int z)
 	{
-		if (!Map.IsInMap(x, z)) 
+		if (!Map.InBounds(x, z)) 
 			return 0;
 		
 		return rays[x, z];
@@ -102,9 +102,7 @@ public sealed class MapLight
 	
 	public static byte GetLightSafe(int x, int y, int z)
 	{
-		if (y < 0 || y >= Map.Height) return LightUtils.MinLight;
-		
-		if (!Map.IsInMap(x, z))
+		if (!Map.InBounds(x, y, z))
 			return LightUtils.MinLight;
 		
 		byte light = lights[x + Map.Size * (y + Map.Height * z)];
@@ -126,12 +124,7 @@ public sealed class MapLight
 	
 	public static byte GetSunlightSafe(int x, int y, int z)
 	{
-		if (y < 0) return LightUtils.MinLight;
-		else if (y >= Map.Height) return LightUtils.MaxLight;
-		
-		if (!Map.IsInMap(x, z))
-			return y >= Map.SeaLevel ? LightUtils.MaxLight : LightUtils.MinLight;
-
+		if (!Map.InBounds(x, y, z)) return LightUtils.MinLight;
 		if (y >= GetRay(x, z)) return LightUtils.MaxLight;
 
 		byte light = sunlights[x + Map.Size * (y + Map.Height * z)];

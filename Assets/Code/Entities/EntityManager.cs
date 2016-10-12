@@ -18,7 +18,7 @@ public sealed class EntityManager : ScriptableObject
 		entities.Add(new Prefab("Entities/Player").Instantiate().GetComponent<Entity>());
 		entities[0].Init(this, 0);
 
-		EventManager.OnGameEvent += GameEventHandler;
+		Events.OnGameEvent += GameEventHandler;
 	}
 
 	private void GameEventHandler(GameEventType type)

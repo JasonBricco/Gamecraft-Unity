@@ -66,7 +66,7 @@ public sealed class FluidSimulator : ScriptableObject, IUpdatable
 		
 	private static void FlowFluid(BlockInstance blockInst)
 	{
-		Index curIndex = new Index(blockInst.x, blockInst.y, blockInst.z);
+		MapIndex curIndex = new MapIndex(blockInst.x, blockInst.y, blockInst.z);
 		int fluidLevel = blockInst.block.FluidLevel;
 
 		// Flowing fluid reduces the fluid level by 1. Add 1 to MaxFluidLevel so that when we flow fluid 
@@ -84,7 +84,7 @@ public sealed class FluidSimulator : ScriptableObject, IUpdatable
 
 	private static void UnflowFluid(BlockInstance blockInst)
 	{
-		Index curIndex = new Index(blockInst.x, blockInst.y, blockInst.z);
+		MapIndex curIndex = new MapIndex(blockInst.x, blockInst.y, blockInst.z);
 		int fluidLevel = blockInst.block.FluidLevel;
 
 		if (fluidLevel <= MinFluidLevel) return;
@@ -96,9 +96,9 @@ public sealed class FluidSimulator : ScriptableObject, IUpdatable
 		UnflowIfPossible(blockInst.x, blockInst.y, blockInst.z + 1, curIndex, fluidLevel);
 	}
 		
-	private static bool FlowIfPossible(int x, int y, int z, Index curIndex, int fluidLevel, bool down = false)
+	private static bool FlowIfPossible(int x, int y, int z, MapIndex curIndex, int fluidLevel, bool down = false)
 	{
-		if (!Map.IsInMap(x, y, z)) return false;
+		if (!Map.InBounds(x, y, z)) return false;
 
 		Block block = Map.GetBlock(x, y, z);
 		bool canFlow = false;
@@ -126,9 +126,9 @@ public sealed class FluidSimulator : ScriptableObject, IUpdatable
 		return false;
 	}
 		
-	private static void UnflowIfPossible(int nX, int nY, int nZ, Index curIndex, int fluidLevel)
+	private static void UnflowIfPossible(int nX, int nY, int nZ, MapIndex curIndex, int fluidLevel)
 	{
-		if (Map.IsInMap(nX, nY, nZ))
+		if (Map.InBounds(nX, nY, nZ))
 		{
 			Block neighbor = Map.GetBlock(nX, nY, nZ);
 

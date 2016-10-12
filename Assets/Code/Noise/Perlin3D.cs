@@ -5,6 +5,8 @@ public static class Perlin3D
 {
 	private const int GradientSizeTable = 256;
 	private static Vector3[] gradients = new Vector3[GradientSizeTable];
+
+	private static int seed;
 	
 	private static short[] perm = new short[] 
 	{
@@ -28,6 +30,13 @@ public static class Perlin3D
 	
 	public static void Initialize() 
 	{
+		Events.OnSave += (data) => { data.seed3D = seed; };
+
+		if (MapData.LoadedData == null)
+			seed = (int)System.DateTime.Now.Ticks;
+		else seed = MapData.LoadedData.seed3D;
+
+		Random.InitState(seed);
 		SetRandomGradients();
 	}
 

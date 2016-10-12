@@ -73,7 +73,7 @@ public sealed class Chunk
 		catch (System.Exception e)
 		{
 			Debug.LogError("An error has occurred. See the error log for details.");
-			ErrorHandling.LogText("Error while building meshes.", e.Message, e.StackTrace);
+			Logger.Log("Error while building meshes.", e.Message, e.StackTrace);
 			Engine.SignalQuit();
 		}
 	}

@@ -91,10 +91,7 @@ public sealed class Enemy : Entity, IUpdatable
 		delta = t.TransformDirection(delta);
 		colFlags = controller.Move(delta);
 
-		Vector3 pos = t.position;
-
-		if (pos.y < 0.0f || pos.y > 512.0f || pos.x < -50.0f || pos.x > Map.Size + 50.0f || pos.z < -50.0f || pos.z > Map.Size + 50.0f)
-			Kill();
+		ClampToMap();
 	}
 
 	private bool TryFindTarget()
@@ -123,8 +120,8 @@ public sealed class Enemy : Entity, IUpdatable
 
 	private void Spawn()
 	{
-		Vector3i startPos = Map.GetWorldCenter();
-		Vector3 spawn = TryFindLand(new Vector3i(startPos.x + 32, startPos.y, startPos.z + 32));
+		Vector2i startPos = Map.Center;
+		Vector3 spawn = TryFindLand(new Vector3i(startPos.x + 32, 0, startPos.z + 32));
 
 		spawn.y += 0.45f;
 		transform.position = spawn;

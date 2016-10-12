@@ -16,10 +16,8 @@ public sealed class GrassyGenerator : TerrainGenerator
 		caveNoise3D = new NoiseArray3D(1.0f / 80.0f);
 	}
 
-	public override void Initialize(int worldX, int worldZ)
+	protected override void Setup(int worldX, int worldZ)
 	{
-		base.Initialize(worldX, worldZ);
-
 		rand = new System.Random(worldX * 10 + worldZ * 1000);
 		terrainNoise.GenerateNoise(worldX, worldZ);
 		islandNoise.GenerateNoise(worldX, worldZ);
@@ -29,8 +27,6 @@ public sealed class GrassyGenerator : TerrainGenerator
 		terrainNoise3D.GenerateNoise(worldPos);
 		islandNoise3D.GenerateNoise(worldPos);
 		caveNoise3D.GenerateNoise(worldPos);
-
-		GenerateChunk(worldX, worldZ);
 	}
 
 	protected override void GenerateColumn(int x, int z, int offset)
@@ -38,7 +34,7 @@ public sealed class GrassyGenerator : TerrainGenerator
 		int terrainHeight = Mathf.Max(GetTerrainHeight(x, z) - offset, 1);
 		int islandHeight = Mathf.Max(GetIslandHeight(x, z) - offset, 1);
 
-		bool forest = Voronoi.GetValue(x, z, 0.005, 1.0) <= 0.0;
+		bool forest = Voronoi.GetValue(x, z, 0.005f, 1.0f) <= 0.0f;
 
 		for (int y = 0; y < Map.Height; y++) 
 		{
@@ -70,6 +66,19 @@ public sealed class GrassyGenerator : TerrainGenerator
 			{
 				if (val <= 0.2)
 					Map.SetBlock(x, islandHeight + 1, z, new Block(BlockID.TallGrass));
+			}
+		}
+	}
+
+	protected override void GenerateOuter(int x, int z)
+	{
+		for (int y = 0; y < Map.Height; y++) 
+		{
+			if (y == 0) Map.SetBlock(x, y, z, new Block(BlockID.Stone));
+			else 
+			{
+				if (y <= Map.SeaLevel) 
+					Map.SetBlock(x, y, z, new Block(BlockID.Water, FluidSimulator.MaxFluidLevel));
 			}
 		}
 	}

@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Text;
 
-public sealed class ErrorHandling : ScriptableObject
+public sealed class Logger : ScriptableObject
 {
 	private static string dataPath;
 
@@ -17,12 +17,12 @@ public sealed class ErrorHandling : ScriptableObject
 	{
 		if (type == LogType.Error)
 		{
-			LogText(logString, stackTrace);
+			Log(logString, stackTrace);
 			Engine.SignalQuit();
 		}
 	}
 
-	public static void LogText(params string[] items)
+	public static void Log(params string[] items)
 	{
 		StringBuilder text = new StringBuilder(System.DateTime.Now.ToString() + System.Environment.NewLine);
 
@@ -30,6 +30,18 @@ public sealed class ErrorHandling : ScriptableObject
 			text.AppendLine(items[i]);
 
 		File.AppendAllText(dataPath + "/Log.txt", text.ToString() + System.Environment.NewLine);
+	}
+
+	public static void LogWarning(string text)
+	{
+		Debug.LogWarning(text);
+		Log(text);
+	}
+
+	public static void LogError(string text)
+	{
+		Debug.LogError(text);
+		Log(text);
 	}
 
 	public static void VerifyCollection(Array collection, string name)

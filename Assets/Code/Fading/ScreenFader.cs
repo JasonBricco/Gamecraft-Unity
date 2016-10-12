@@ -9,7 +9,7 @@ public sealed class ScreenFader : MonoBehaviour
 
 	private void Awake()
 	{
-		EventManager.OnStateChange += (state) => 
+		Events.OnStateChange += (state) => 
 		{
 			if (state == GameState.Paused)
 				SetPause();

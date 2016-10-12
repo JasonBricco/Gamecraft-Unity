@@ -16,8 +16,9 @@ public sealed class Player : Entity, IUpdatable
 		speed = 50.0f;
 		SetFlag(EntityFlags.Friendly);
 
-		EventManager.OnGameEvent += GameEventHandler;
-		EventManager.OnCommand += CommandHandler;
+		Events.OnGameEvent += GameEventHandler;
+		Events.OnCommand += CommandHandler;
+		Events.OnSave += (data) => { data.playerPos = transform.position; };
 
 		Updater.Register(this);
 	}
@@ -28,10 +29,6 @@ public sealed class Player : Entity, IUpdatable
 		{
 		case GameEventType.BeginPlay:
 			Spawn();
-			break;
-
-		case GameEventType.SaveWorld:
-			MapData.GetData().playerPos = transform.position;
 			break;
 		}
 	}
@@ -216,11 +213,7 @@ public sealed class Player : Entity, IUpdatable
 		delta = t.TransformDirection(delta);
 
 		colFlags = controller.Move(delta);
-
-		Vector3 pos = t.position;
-
-		if (pos.y < 0.0f || pos.y > 512.0f || pos.x < -50.0f || pos.x > Map.Size + 50.0f || pos.z < -50.0f || pos.z > Map.Size + 50.0f)
-			Kill();
+		ClampToMap();
 	}
 
 	public override void Kill()
@@ -229,16 +222,14 @@ public sealed class Player : Entity, IUpdatable
 	}
 	
 	private void Spawn()
-	{
-		Vector3 position = MapData.GetData().playerPos;
-		
-		if (!Mathf.Approximately(position.x, -1.0f))
+	{		
+		if (MapData.LoadedData != null)
 		{
-			transform.position = position;
+			transform.position = MapData.LoadedData.playerPos;
 			return;
 		}
 
-		Vector3 spawn = TryFindLand(Map.GetWorldCenter());
+		Vector3 spawn = TryFindLand(new Vector3i(Map.Center.x, 0, Map.Center.z));
 
 		spawn.y += 0.45f;
 		transform.position = spawn;

@@ -71,28 +71,28 @@ public static class SunlightEngine
 		{
 			Vector3i next = pos + Vector3i.directions[i];
 			
-			if (Map.IsInMap(next.x, next.z))
+			if (Map.InBounds(next.x, next.z))
 				nodes.Enqueue(next);
 		}
 		
 		ScatterNodes(nodes, false);
 	}
 
+	// Scatters the initial light throughout the map.
 	public static void Scatter(int worldX, int worldZ, Queue<Vector3i> sunNodes, Queue<Vector3i> lightNodes) 
 	{
 		for (int x = worldX; x < worldX + Chunk.Size; x++) 
 		{
 			for (int z = worldZ; z < worldZ + Chunk.Size; z++) 
 			{
-				int maxY = ComputeMaxY(x, z);
-				
-				for (int y = 0; y <= maxY; y++) 
+				int ray = MapLight.GetRay(x, z);
+				int maxY = ComputeMaxY(x, z, ray);
+
+				for (int y = ray; y <= maxY; y++) 
 				{
 					if (y >= Map.Height) continue;
-					
-					if (MapLight.GetSunlight(x, y, z) > LightUtils.MinLight)
-						sunNodes.Enqueue(new Vector3i(x, y, z));
-					
+
+					sunNodes.Enqueue(new Vector3i(x, y, z));
 					byte light = Map.GetBlock(x, y, z).LightEmitted();
 					
 					if (light > LightUtils.MinLight)
@@ -124,7 +124,7 @@ public static class SunlightEngine
 			{
 				Vector3i nextPos = pos + Vector3i.directions[i];
 
-				if (Map.IsInMap(nextPos.x, nextPos.y, nextPos.z))
+				if (Map.InBounds(nextPos.x, nextPos.y, nextPos.z))
 				{
 					block = Map.GetBlock(nextPos.x, nextPos.y, nextPos.z);
 
@@ -172,7 +172,7 @@ public static class SunlightEngine
 			{
 				Vector3i nextPos = pos + Vector3i.directions[i];
 
-				if (Map.IsInMap(nextPos.x, nextPos.z))
+				if (Map.InBounds(nextPos.x, nextPos.z))
 				{
 					Block block = Map.GetBlock(nextPos.x, nextPos.y, nextPos.z);
 					
@@ -192,15 +192,15 @@ public static class SunlightEngine
 		ScatterNodes(newNodes, false);
 	}
 
-	private static int ComputeMaxY(int x, int z)
+	// Returns the highest point in the world between this column and each neighbor column.
+	private static int ComputeMaxY(int x, int z, int ray)
 	{
-		int maxY = MapLight.GetRay(x, z);
-		maxY = Mathf.Max(maxY, MapLight.GetRaySafe(x - 1, z));
-		maxY = Mathf.Max(maxY, MapLight.GetRaySafe(x + 1, z));
-		maxY = Mathf.Max(maxY, MapLight.GetRaySafe(x, z - 1));
-		maxY = Mathf.Max(maxY, MapLight.GetRaySafe(x, z + 1));
+		ray = Mathf.Max(ray, MapLight.GetRaySafe(x - 1, z));
+		ray = Mathf.Max(ray, MapLight.GetRaySafe(x + 1, z));
+		ray = Mathf.Max(ray, MapLight.GetRaySafe(x, z - 1));
+		ray = Mathf.Max(ray, MapLight.GetRaySafe(x, z + 1));
 		
-		return maxY;
+		return ray;
 	}
 
 	private static bool SetMax(byte light, int x, int y, int z) 

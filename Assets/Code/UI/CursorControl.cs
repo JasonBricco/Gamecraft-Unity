@@ -9,7 +9,7 @@ public sealed class CursorControl : ScriptableObject, IUpdatable
 	{
 		cursor = UIStore.GetUI<Image>("Cursor").transform;
 
-		EventManager.OnStateChange += (state) => 
+		Events.OnStateChange += (state) => 
 		{
 			if (state == GameState.Paused)
 			{

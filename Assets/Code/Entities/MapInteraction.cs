@@ -63,7 +63,7 @@ public sealed class MapInteraction : MonoBehaviour, IUpdatable
 	
 		currentAdd = AddBlock;
 
-		EventManager.OnCommand += (command, args) => 
+		Events.OnCommand += (command, args) => 
 		{ 
 			if (command == CommandType.ToggleReticle)
 				reticleEnabled = !reticleEnabled;

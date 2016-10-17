@@ -32,16 +32,16 @@ public sealed class Logger : ScriptableObject
 		File.AppendAllText(dataPath + "/Log.txt", text.ToString() + System.Environment.NewLine);
 	}
 
-	public static void LogWarning(string text)
+	public static void LogWarning(params string[] items)
 	{
-		Debug.LogWarning(text);
-		Log(text);
+		Debug.LogWarning(items[0]);
+		Log(items);
 	}
 
-	public static void LogError(string text)
+	public static void LogError(params string[] items)
 	{
-		Debug.LogError(text);
-		Log(text);
+		Debug.LogError(items[0]);
+		Log(items);
 	}
 
 	public static void VerifyCollection(Array collection, string name)

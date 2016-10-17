@@ -115,7 +115,7 @@ public sealed class Map : ScriptableObject, IUpdatable
 		}
 		catch (System.Exception e)
 		{
-			Logger.Log("Error while building terrain.", e.Message, e.StackTrace);
+			Logger.LogError("Error while building terrain.", e.Message, e.StackTrace);
 			Engine.SignalQuit();
 		}
 	}

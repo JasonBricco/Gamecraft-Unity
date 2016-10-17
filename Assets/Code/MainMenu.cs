@@ -10,14 +10,15 @@ public sealed class MainMenu : MonoBehaviour
 	private void Start()
 	{
 		MapData.Load();
-
 		percentText = UIStore.GetUI<Text>("GenerationPercent");
 		Engine.ChangeState(GameState.MainMenu);
 	}
 
 	public void TryPlay(GameObject worldTypesWindow)
 	{
-		if (MapData.LoadedData != null) SetTypeAndBuild(MapData.LoadedData.genID);
+		bool loaded = Map.Decode();
+
+		if (loaded) Engine.BeginPlay();
 		else worldTypesWindow.SetActive(true);
 	}
 

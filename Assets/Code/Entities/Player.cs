@@ -225,6 +225,7 @@ public sealed class Player : Entity, IUpdatable
 	{		
 		if (MapData.LoadedData != null)
 		{
+			Debug.Log("Ran here. Which is bad, it should not have.");
 			transform.position = MapData.LoadedData.playerPos;
 			return;
 		}
@@ -255,7 +256,7 @@ public sealed class Player : Entity, IUpdatable
 		if ((colFlags & CollisionFlags.Sides) != 0)
 		{
 			Vector3i pos = Utils.GetBlockPos(hit.transform.position);
-			Block block = Map.GetBlockSafe(pos.x, pos.y, pos.z);
+			Block block = Map.GetBlock(pos.x, pos.y, pos.z);
 
 			if (block.TriggerState() == MoveState.Climbing)
 				state = MoveState.Climbing;

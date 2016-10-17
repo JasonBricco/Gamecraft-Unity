@@ -10,11 +10,7 @@ public static class Voronoi
 
 	public static void Initialize() 
 	{
-		Events.OnSave += (data) => { data.seed2D = seed; };
-
-		if (MapData.LoadedData == null)
-			seed = Random.Range(-5000, 5000);
-		else seed = MapData.LoadedData.voronoiSeed;
+		seed = Random.Range(-5000, 5000);
 	}
 
 	public static float Distance { get; private set; }

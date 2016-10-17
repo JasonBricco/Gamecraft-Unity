@@ -4,31 +4,41 @@ using System;
 using System.IO;
 
 [Serializable]
-public class SerializableData
+public sealed class SerializableData
 {
-	public int genID, seed2D, seed3D, voronoiSeed;
-	public int[] modified;
-	public List<int> chunkIndices = new List<int>();
+	public Vector3 playerPos = new Vector3(-1, -1, -1);
+}
+
+[Serializable]
+public sealed class SerializableChunk
+{
+	public int modified;
 	public List<int> countList = new List<int>();
 	public List<ushort> dataList = new List<ushort>();
-	public Vector3 playerPos = new Vector3(-1, -1, -1);
+}
+
+public struct DecodableChunk
+{
+	public SerializableChunk chunk;
+	public Vector2i pos;
+
+	public DecodableChunk(SerializableChunk chunk, Vector2i pos)
+	{
+		this.chunk = chunk;
+		this.pos = pos;
+	}
 }
 	
 public sealed class MapData : ScriptableObject
 {
-	private static string path;
+	private static string dataPath;
 	private static bool allowSave;
 
-	private static SerializableData loadedData = null;
-
-	public static SerializableData LoadedData 
-	{
-		get { return loadedData; }
-	}
+	public static SerializableData LoadedData { get; private set; }
 
 	private void Awake()
 	{
-		path = Application.persistentDataPath + "/MapData.txt";
+		dataPath = Engine.Path + "MapData.txt";
 
 		Events.OnGameEvent += (type) => 
 		{
@@ -41,12 +51,12 @@ public sealed class MapData : ScriptableObject
 	{
 		if (allowSave)
 		{
+			Map.Encode();
+
 			SerializableData data = new SerializableData();
 			Events.SendSaveEvent(data);
-			Map.Encode(data);
-			data.genID = Map.GenID;
 
-			FileStream stream = new FileStream(path, FileMode.Create);
+			FileStream stream = new FileStream(dataPath, FileMode.Create);
 			StreamWriter dataWriter = new StreamWriter(stream);
 			string json = JsonUtility.ToJson(data);
 			dataWriter.Write(json);
@@ -58,19 +68,19 @@ public sealed class MapData : ScriptableObject
 	{
 		allowSave = true;
 
-		if (File.Exists(path))
+		if (File.Exists(dataPath))
 		{
-			FileStream stream = new FileStream(path, FileMode.Open);
+			FileStream stream = new FileStream(dataPath, FileMode.Open);
 			StreamReader reader = new StreamReader(stream);
 			string json = reader.ReadToEnd();
-			loadedData = JsonUtility.FromJson<SerializableData>(json);
+			LoadedData = JsonUtility.FromJson<SerializableData>(json);
 			reader.Close();
 		}
 	}
 
 	public static void DeleteAll()
 	{
-		if (File.Exists(path)) File.Delete(path);
+		if (File.Exists(dataPath)) File.Delete(dataPath);
 
 		allowSave = false;
 		Engine.SignalQuit();

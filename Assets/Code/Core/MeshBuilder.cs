@@ -237,44 +237,42 @@ public sealed class MeshBuilder
 
 	public void BuildCube(Block block, int x, int y, int z, MeshData meshData)
 	{
-		int localX = x & (Chunk.Size - 1);
-		int localZ = z & (Chunk.Size - 1);
-
+		Vector3i local = Map.ToLocalPos(x, y, z);
 		Vector3i worldPos = new Vector3i(x, y, z);
 
 		if (IsFaceVisible(block, x, y, z + 1, Direction.Back)) 
 		{
-			BuildSquareFace(block, localX, y, localZ, meshData, squareFront, Direction.Front);
+			BuildSquareFace(block, local.x, local.y, local.z, meshData, squareFront, Direction.Front);
 			BuildSquareLight(Axis.Z, worldPos, meshData, squareOffsetFront);
 		}
 
 		if (IsFaceVisible(block, x, y, z - 1, Direction.Front)) 
 		{
-			BuildSquareFace(block, localX, y, localZ, meshData, squareBack, Direction.Back);
+			BuildSquareFace(block, local.x, local.y, local.z, meshData, squareBack, Direction.Back);
 			BuildSquareLight(Axis.Z, worldPos, meshData, squareOffsetBack);
 		}
 
 		if (IsFaceVisible(block, x + 1, y, z, Direction.Left)) 
 		{
-			BuildSquareFace(block, localX, y, localZ, meshData, squareRight, Direction.Right);
+			BuildSquareFace(block, local.x, local.y, local.z, meshData, squareRight, Direction.Right);
 			BuildSquareLight(Axis.X, worldPos, meshData, squareOffsetRight);
 		}
 
 		if (IsFaceVisible(block, x - 1, y, z, Direction.Right)) 
 		{
-			BuildSquareFace(block, localX, y, localZ, meshData, squareLeft, Direction.Left);
+			BuildSquareFace(block, local.x, local.y, local.z, meshData, squareLeft, Direction.Left);
 			BuildSquareLight(Axis.X, worldPos, meshData, squareOffsetLeft);
 		}
 
 		if (IsFaceVisible(block, x, y + 1, z, Direction.Down)) 
 		{
-			BuildSquareFace(block, localX, y, localZ, meshData, squareTop, Direction.Up);
+			BuildSquareFace(block, local.x, local.y, local.z, meshData, squareTop, Direction.Up);
 			BuildSquareLight(Axis.Y, worldPos, meshData, squareOffsetTop);
 		}
 
 		if (IsFaceVisible(block, x, y - 1, z, Direction.Up)) 
 		{
-			BuildSquareFace(block, localX, y, localZ, meshData, squareBottom, Direction.Down);
+			BuildSquareFace(block, local.x, local.y, local.z, meshData, squareBottom, Direction.Down);
 			BuildSquareLight(Axis.Y, worldPos, meshData, squareOffsetBottom);
 		}
 	}
@@ -283,30 +281,28 @@ public sealed class MeshBuilder
 	{
 		int direction = block.BlockDirection;
 
-		int localX = x & (Chunk.Size - 1);
-		int localZ = z & (Chunk.Size - 1);
-
+		Vector3i local = Map.ToLocalPos(x, y, z);
 		Vector3i worldPos = new Vector3i(x, y, z);
 
 		switch (direction)
 		{
 		case Direction.Left:
-			BuildSquareFace(block, localX, y, localZ, meshData, ladderLeft, Direction.Left);
+			BuildSquareFace(block, local.x, local.y, local.z, meshData, ladderLeft, Direction.Left);
 			BuildSquareLight(Axis.X, worldPos, meshData, ladderOffsetLeft);
 			break;
 
 		case Direction.Right:
-			BuildSquareFace(block, localX, y, localZ, meshData, ladderRight, Direction.Right);
+			BuildSquareFace(block, local.x, local.y, local.z, meshData, ladderRight, Direction.Right);
 			BuildSquareLight(Axis.X, worldPos, meshData, ladderOffsetRight);
 			break;
 
 		case Direction.Front:
-			BuildSquareFace(block, localX, y, localZ, meshData, ladderFront, Direction.Front);
+			BuildSquareFace(block, local.x, local.y, local.z, meshData, ladderFront, Direction.Front);
 			BuildSquareLight(Axis.Z, worldPos, meshData, ladderOffsetFront);
 			break;
 
 		case Direction.Back:
-			BuildSquareFace(block, localX, y, localZ, meshData, ladderBack, Direction.Back);
+			BuildSquareFace(block, local.x, local.y, local.z, meshData, ladderBack, Direction.Back);
 			BuildSquareLight(Axis.Z, worldPos, meshData, ladderOffsetBack);
 			break;
 		}
@@ -314,9 +310,7 @@ public sealed class MeshBuilder
 
 	public void BuildFluid(Block block, int x, int y, int z, MeshData meshData)
 	{
-		int localX = x & (Chunk.Size - 1);
-		int localZ = z & (Chunk.Size - 1);
-
+		Vector3i local = Map.ToLocalPos(x, y, z);
 		Vector3i worldPos = new Vector3i(x, y, z);
 
 		AdjacentBlocks neighbors = Map.GetAdjacentBlocks(x, y, z);
@@ -326,133 +320,125 @@ public sealed class MeshBuilder
 
 		if (IsFluidFaceVisible(curLevel, x, y, z + 1, neighbors.front, Direction.Back)) 
 		{
-			BuildFrontFluid(block, localX, y, localZ, meshData, Direction.Front, offset, neighbors.front);
+			BuildFrontFluid(block, local.x, local.y, local.z, meshData, Direction.Front, offset, neighbors.front);
 			BuildSquareLight(Axis.Z, worldPos, meshData, squareOffsetFront);
 		}
 
 		if (IsFluidFaceVisible(curLevel, x, y, z - 1, neighbors.back, Direction.Front)) 
 		{
-			BuildBackFluid(block, localX, y, localZ, meshData, Direction.Back, offset, neighbors.back);
+			BuildBackFluid(block, local.x, local.y, local.z, meshData, Direction.Back, offset, neighbors.back);
 			BuildSquareLight(Axis.Z, worldPos, meshData, squareOffsetBack);
 		}
 
 		if (IsFluidFaceVisible(curLevel, x + 1, y, z, neighbors.right, Direction.Left)) 
 		{
-			BuildRightFluid(block, localX, y, localZ, meshData, Direction.Right, offset, neighbors.right);
+			BuildRightFluid(block, local.x, local.y, local.z, meshData, Direction.Right, offset, neighbors.right);
 			BuildSquareLight(Axis.X, worldPos, meshData, squareOffsetRight);
 		}
 
 		if (IsFluidFaceVisible(curLevel, x - 1, y, z, neighbors.left, Direction.Right)) 
 		{
-			BuildLeftFluid(block, localX, y, localZ, meshData, Direction.Left, offset, neighbors.left);
+			BuildLeftFluid(block, local.x, local.y, local.z, meshData, Direction.Left, offset, neighbors.left);
 			BuildSquareLight(Axis.X, worldPos, meshData, squareOffsetLeft);
 		}
 
 		if (IsFluidFaceVisible(curLevel, x, y + 1, z, neighbors.top, Direction.Down)) 
 		{
-			BuildTopFluid(block, localX, y, localZ, meshData, Direction.Up, offset);
+			BuildTopFluid(block, local.x, local.y, local.z, meshData, Direction.Up, offset);
 			BuildSquareLight(Axis.Y, worldPos, meshData, squareOffsetTop);
 		}
 
 		if (IsFluidFaceVisible(curLevel, x, y - 1, z, neighbors.bottom, Direction.Up)) 
 		{
-			BuildBottomFluid(block, localX, y, localZ, meshData, Direction.Down);
+			BuildBottomFluid(block, local.x, local.y, local.z, meshData, Direction.Down);
 			BuildSquareLight(Axis.Y, worldPos, meshData, squareOffsetBottom);
 		}
 	}
 
 	public void BuildSquareCutout(Block block, int x, int y, int z, MeshData meshData)
 	{
-		int localX = x & (Chunk.Size - 1);
-		int localZ = z & (Chunk.Size - 1);
-
+		Vector3i local = Map.ToLocalPos(x, y, z);
 		Vector3i worldPos = new Vector3i(x, y, z);
 
-		BuildSquareFace(block, localX, y, localZ, meshData, squareCutoutFront, Direction.Front);
+		BuildSquareFace(block, local.x, local.y, local.z, meshData, squareCutoutFront, Direction.Front);
 		BuildSquareLight(Axis.Z, worldPos, meshData, squareOffsetFront);
 
-		BuildSquareFace(block, localX, y, localZ, meshData, squareCutoutBack, Direction.Back);
+		BuildSquareFace(block, local.x, local.y, local.z, meshData, squareCutoutBack, Direction.Back);
 		BuildSquareLight(Axis.Z, worldPos, meshData, squareOffsetBack);
 
-		BuildSquareFace(block, localX, y, localZ, meshData, squareCutoutRight, Direction.Right);
+		BuildSquareFace(block, local.x, local.y, local.z, meshData, squareCutoutRight, Direction.Right);
 		BuildSquareLight(Axis.X, worldPos, meshData, squareOffsetRight);
 
-		BuildSquareFace(block, localX, y, localZ, meshData, squareCutoutLeft, Direction.Left);
+		BuildSquareFace(block, local.x, local.y, local.z, meshData, squareCutoutLeft, Direction.Left);
 		BuildSquareLight(Axis.X, worldPos, meshData, squareOffsetLeft);
 	}
 
 	public void BuildFrontSlope(Block block, int x, int y, int z, MeshData meshData)
 	{
-		int localX = x & (Chunk.Size - 1);
-		int localZ = z & (Chunk.Size - 1);
-
+		Vector3i local = Map.ToLocalPos(x, y, z);
 		Vector3i worldPos = new Vector3i(x, y, z);
 
 		if (IsFaceVisible(block, x, y, z - 1, Direction.Front)) 
 		{
-			BuildSquareFace(block, localX, y, localZ, meshData, squareBack, Direction.Back);
+			BuildSquareFace(block, local.x, local.y, local.z, meshData, squareBack, Direction.Back);
 			BuildSquareLight(Axis.Z, worldPos, meshData, squareOffsetBack);
 		}
 
 		if (IsFaceVisible(block, x + 1, y, z, Direction.Left)) 
 		{
-			BuildTriangleFace(localX, y, localZ, meshData, frontSlopeRight, Direction.Right);
+			BuildTriangleFace(local.x, local.y, local.z, meshData, frontSlopeRight, Direction.Right);
 			AddFrontSlopeUVs(block, Direction.Right, meshData);
 			BuildTriangleLight(Axis.X, worldPos, meshData, frontSlopeOffsetRight);
 		}
 
 		if (IsFaceVisible(block, x - 1, y, z, Direction.Right)) 
 		{
-			BuildTriangleFace(localX, y, localZ, meshData, frontSlopeLeft, Direction.Left);
+			BuildTriangleFace(local.x, local.y, local.z, meshData, frontSlopeLeft, Direction.Left);
 			AddFrontSlopeUVs(block, Direction.Left, meshData);
 			BuildTriangleLight(Axis.X, worldPos, meshData, frontSlopeOffsetLeft);
 		}
 
-		BuildSquareFace(block, localX, y, localZ, meshData, frontSlopeTop, Direction.Up);
+		BuildSquareFace(block, local.x, local.y, local.z, meshData, frontSlopeTop, Direction.Up);
 		BuildSlopeLight(Axis.Z, worldPos, meshData, frontSlopeOffsetTop);
 
 		if (IsFaceVisible(block, x, y - 1, z, Direction.Up)) 
 		{
-			BuildSquareFace(block, localX, y, localZ, meshData, squareBottom, Direction.Down);
+			BuildSquareFace(block, local.x, local.y, local.z, meshData, squareBottom, Direction.Down);
 			BuildSquareLight(Axis.Y, worldPos, meshData, squareOffsetBottom);
 		}
 	}
 
 	public void BuildBackSlope(Block block, int x, int y, int z, MeshData meshData)
 	{
-		;
-
-		int localX = x & (Chunk.Size - 1);
-		int localZ = z & (Chunk.Size - 1);
-
+		Vector3i local = Map.ToLocalPos(x, y, z);
 		Vector3i worldPos = new Vector3i(x, y, z);
 
 		if (IsFaceVisible(block, x, y, z + 1, Direction.Back)) 
 		{
-			BuildSquareFace(block, localX, y, localZ, meshData, squareFront, Direction.Front);
+			BuildSquareFace(block, local.x, local.y, local.z, meshData, squareFront, Direction.Front);
 			BuildSquareLight(Axis.Z, worldPos, meshData, squareOffsetFront);
 		}
 
 		if (IsFaceVisible(block, x + 1, y, z, Direction.Left)) 
 		{
-			BuildTriangleFace(localX, y, localZ, meshData, backSlopeRight, Direction.Right);
+			BuildTriangleFace(local.x, local.y, local.z, meshData, backSlopeRight, Direction.Right);
 			AddBackSlopeUVs(block, Direction.Right, meshData);
 			BuildTriangleLight(Axis.X, worldPos, meshData, backSlopeOffsetRight);
 		}
 
 		if (IsFaceVisible(block, x - 1, y, z, Direction.Right)) 
 		{
-			BuildTriangleFace(localX, y, localZ, meshData, backSlopeLeft, Direction.Left);
+			BuildTriangleFace(local.x, local.y, local.z, meshData, backSlopeLeft, Direction.Left);
 			AddBackSlopeUVs(block, Direction.Left, meshData);
 			BuildTriangleLight(Axis.X, worldPos, meshData, backSlopeOffsetLeft);
 		}
 
-		BuildSquareFace(block, localX, y, localZ, meshData, backSlopeTop, Direction.Up);
+		BuildSquareFace(block, local.x, local.y, local.z, meshData, backSlopeTop, Direction.Up);
 		BuildSlopeLight(Axis.Z, worldPos, meshData, backSlopeOffsetTop);
 
 		if (IsFaceVisible(block, x, y - 1, z, Direction.Up)) 
 		{
-			BuildSquareFace(block, localX, y, localZ, meshData, squareBottom, Direction.Down);
+			BuildSquareFace(block, local.x, local.y, local.z, meshData, squareBottom, Direction.Down);
 			BuildSquareLight(Axis.Y, worldPos, meshData, squareOffsetBottom);
 		}
 	}

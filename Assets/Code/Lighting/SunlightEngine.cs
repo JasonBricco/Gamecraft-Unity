@@ -132,7 +132,7 @@ public static class SunlightEngine
 					{
 						nodes.Enqueue(nextPos);
 
-						if (!generator) ChunkManager.FlagChunkForUpdate(nextPos.x, nextPos.z);
+						if (!generator) Map.FlagChunkForUpdate(nextPos.x, nextPos.y, nextPos.z);
 					}
 				}
 			}
@@ -181,7 +181,7 @@ public static class SunlightEngine
 						if (MapLight.GetSunlight(nextPos.x, nextPos.y, nextPos.z) <= light) 
 						{
 							nodes.Enqueue(nextPos);
-							ChunkManager.FlagChunkForUpdate(nextPos.x, nextPos.z);
+							Map.FlagChunkForUpdate(nextPos.x, nextPos.y, nextPos.z);
 						}
 						else newNodes.Enqueue(nextPos);
 					}

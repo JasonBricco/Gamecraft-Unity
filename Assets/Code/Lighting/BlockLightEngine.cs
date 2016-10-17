@@ -63,7 +63,7 @@ public sealed class BlockLightEngine
 					if (block.IsTransparent() && SetMax((byte)light, nextPos.x, nextPos.y, nextPos.z))
 						nodes.Enqueue(nextPos);
 				
-					if (!generator) ChunkManager.FlagChunkForUpdate(nextPos.x, nextPos.z);
+					if (!generator) Map.FlagChunkForUpdate(nextPos.x, nextPos.y, nextPos.z);
 				}
 			}
 		}
@@ -110,7 +110,7 @@ public sealed class BlockLightEngine
 					if (block.LightEmitted() > LightUtils.MinLight)
 						newLights.Enqueue(nextPos);
 					
-					ChunkManager.FlagChunkForUpdate(nextPos.x, nextPos.z);
+					Map.FlagChunkForUpdate(nextPos.x, nextPos.y, nextPos.z);
 				}
 			}	
 		}

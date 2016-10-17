@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 public struct PreparedMeshInfo
@@ -19,21 +18,19 @@ public sealed class Chunk
 	public const int SizeBits = 5;
 	public const int Size = 1 << SizeBits;
 
-	private Vector3i position;
-	private Vector3 fPosition;
+	// Chunk position in world coordinates.
+	public Vector3i Position { get; private set; }
 
 	private Mesh[] meshes = new Mesh[MeshDataGroup.MeshCount];
 
-	public Vector3i Position { get { return position; } }
-	public int X { get { return position.x; } }
-	public int Z { get { return position.z; } }
-
 	public bool flaggedForUpdate = false;
 
-	public Chunk(int worldX, int worldZ)
+	// True if this chunk has no visible mesh to draw.
+	private bool invisible = true;
+
+	public Chunk(int wX, int wY, int wZ)
 	{
-		position = new Vector3i(worldX, 0, worldZ);
-		fPosition = position.ToVector3();
+		Position = new Vector3i(wX, wY, wZ);
 
 		for (int i = 0; i < meshes.Length; i++)
 			meshes[i] = new Mesh();
@@ -51,13 +48,11 @@ public sealed class Chunk
 		{
 			MeshDataGroup group = new MeshDataGroup();
 
-			int wX = X, wZ = Z;
-
-			for (int z = wZ; z < wZ + Chunk.Size; z++)
+			for (int y = Position.y; y < Position.y + Chunk.Size; y++) 
 			{
-				for (int y = 0; y < Map.Height; y++) 
+				for (int z = Position.z; z < Position.z + Chunk.Size; z++)
 				{
-					for (int x = wX; x < wX + Chunk.Size; x++)
+					for (int x = Position.x; x < Position.x + Chunk.Size; x++)
 					{
 						Block block = Map.GetBlock(x, y, z);
 
@@ -66,14 +61,14 @@ public sealed class Chunk
 					}
 				}
 			}
-			
+
+			invisible = true;
 			PreparedMeshInfo info = new PreparedMeshInfo(group, this);
-			ChunkManager.ProcessMeshData(info);
+			Map.ProcessMeshData(info);
 		}
 		catch (System.Exception e)
 		{
-			Debug.LogError("An error has occurred. See the error log for details.");
-			Logger.Log("Error while building meshes.", e.Message, e.StackTrace);
+			Logger.LogError("Error while building meshes.", e.Message, e.StackTrace);
 			Engine.SignalQuit();
 		}
 	}
@@ -83,15 +78,20 @@ public sealed class Chunk
 		if (meshes[index] != null)
 			GameObject.Destroy(meshes[index]);
 
+		if (mesh != null)
+			invisible = false;
+		
 		meshes[index] = mesh;
 	}
 
 	public void DrawMeshes()
 	{
+		if (invisible) return;
+
 		for (int i = 0; i < meshes.Length; i++)
 		{
 			if (meshes[i] != null)
-				Graphics.DrawMesh(meshes[i], fPosition, Quaternion.identity, MaterialManager.GetMaterial(i), 0);
+				Graphics.DrawMesh(meshes[i], Position.ToVector3(), Quaternion.identity, MaterialManager.GetMaterial(i), 0);
 		}
 	}
 }

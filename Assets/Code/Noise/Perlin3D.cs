@@ -30,18 +30,6 @@ public static class Perlin3D
 	
 	public static void Initialize() 
 	{
-		Events.OnSave += (data) => { data.seed3D = seed; };
-
-		if (MapData.LoadedData == null)
-			seed = (int)System.DateTime.Now.Ticks;
-		else seed = MapData.LoadedData.seed3D;
-
-		Random.InitState(seed);
-		SetRandomGradients();
-	}
-
-	public static void SetRandomGradients()
-	{
 		for (int i = 0; i < GradientSizeTable; i++) 
 		{
 			float z = 1.0f - 2.0f * Random.value;
@@ -52,7 +40,7 @@ public static class Perlin3D
 			gradients[i].z = z;
 		}
 	}
-	
+
 	public static float Noise(float x, float y, float z, float scale) 
 	{
 		return PerlinNoise(x * scale, y * scale, z * scale) + 0.5f;

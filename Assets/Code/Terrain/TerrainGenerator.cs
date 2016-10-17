@@ -5,19 +5,19 @@ public class TerrainGenerator
 	public const int IslandStart = (Map.WidthChunks / 4) * Chunk.Size;
 	public const int IslandEnd = (IslandStart + ((Map.WidthChunks / 2) * Chunk.Size) - 1);
 
-	public void Generate(int cX, int cZ) 
+	public void Generate(int wX, int wZ) 
 	{
-		if (cX >= IslandStart && cZ >= IslandStart && cX <= IslandEnd && cZ <= IslandEnd)
-			Setup(cX, cZ);
+		if (wX >= IslandStart && wZ >= IslandStart && wX <= IslandEnd && wZ <= IslandEnd)
+			Setup(wX, wZ);
 			
-		GenerateChunk(cX, cZ);
+		GenerateSection(wX, wZ);
 	}
 
-	protected void GenerateChunk(int worldX, int worldZ)
+	private void GenerateSection(int wX, int wZ)
 	{
-		for (int z = worldZ; z < worldZ + Chunk.Size; z++)
+		for (int z = wZ; z < wZ + Chunk.Size; z++)
 		{
-			for (int x = worldX; x < worldX + Chunk.Size; x++) 
+			for (int x = wX; x < wX + Chunk.Size; x++) 
 			{
 				int valueInCircle = Utils.Square(x - Map.Center.x) + Utils.Square(z - Map.Center.z);
 				int beginFalloff = Map.SqRadius - 8192;
@@ -39,10 +39,10 @@ public class TerrainGenerator
 	protected virtual void Setup(int x, int z) {}
 
 	// Generate a terrain column within the island (standard terrain).
-	protected virtual void GenerateColumn(int x, int z, int offset) {}
+	protected virtual void GenerateColumn(int wX, int wZ, int offset) {}
 
 	// Generate a terrain column outside of the island (typically ocean).
-	protected virtual void GenerateOuter(int x, int z) {}
+	protected virtual void GenerateOuter(int wX, int wZ) {}
 
 	protected bool IsInRange(float val, float min, float max) 
 	{

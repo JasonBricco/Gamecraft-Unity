@@ -59,7 +59,7 @@ public sealed class MeshData
 
 	public Mesh GetMesh()
 	{
-		if (vertices.Count > 65000)
+		if (vertices.Count == 0 || vertices.Count > 65000)
 			return null;
 
 		Mesh mesh = new Mesh();

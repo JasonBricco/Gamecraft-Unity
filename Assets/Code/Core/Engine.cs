@@ -14,10 +14,15 @@ public sealed class Engine : MonoBehaviour, IUpdatable
 	private static GameState currentState;
 	private static bool signalQuit = false;
 
+	public static string Path { get; private set; }
+
 	private void Awake()
 	{
 		Updater.Register(this);
 
+		Path = Application.persistentDataPath + "/";
+
+		ScriptableObject.CreateInstance<Map>();
 		ScriptableObject.CreateInstance<MapData>();
 		ScriptableObject.CreateInstance<MaterialManager>();
 		ScriptableObject.CreateInstance<Logger>();
@@ -25,7 +30,6 @@ public sealed class Engine : MonoBehaviour, IUpdatable
 		ScriptableObject.CreateInstance<FluidSimulator>();
 		ScriptableObject.CreateInstance<Commands>();
 		ScriptableObject.CreateInstance<ThreadManager>();
-		ScriptableObject.CreateInstance<ChunkManager>();
 		ScriptableObject.CreateInstance<EntityManager>();
 
 		Events.OnStateChange += (state) => 

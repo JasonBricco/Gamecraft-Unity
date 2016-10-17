@@ -62,9 +62,10 @@ public struct Vector3i
 	public static int DistanceSquared(Vector3i a, Vector3i b) 
 	{
 		int dx = b.x - a.x;
+		int dy = b.y - a.y;
 		int dz = b.z - a.z;
 		
-		return dx * dx + dz * dz;
+		return dx * dx + dy * dy + dz * dz;
 	}
 
 	public int GetNormalDirection()

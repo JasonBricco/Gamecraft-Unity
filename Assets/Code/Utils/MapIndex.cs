@@ -25,7 +25,7 @@ public struct MapIndex : IEquatable<MapIndex>
 		Vector3i v = new Vector3i();
 
 		v.x = value & (Map.Size - 1);
-		v.y = (value >> Map.SizeBits) & (Map.Height - 1);
+		v.y = (value >> Map.XBits) & (Map.Height - 1);
 		v.z = value >> 17;
 
 		return v;

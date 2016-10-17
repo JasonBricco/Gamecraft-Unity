@@ -17,7 +17,7 @@ public sealed class FlatGenerator : TerrainGenerator
 
 	protected override void GenerateOuter(int x, int z)
 	{
-		for (int y = 0; y < Map.Height; y++) 
+		for (int y = 0; y < Map.Height; y++)
 		{
 			if (y == 0) Map.SetBlock(x, y, z, new Block(BlockID.Stone));
 			else 

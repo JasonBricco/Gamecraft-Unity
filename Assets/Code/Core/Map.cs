@@ -1,19 +1,22 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Assertions;
 using System.Collections.Generic;
 using System.Threading;
 using System.Diagnostics;
+using System.IO;
 
 public struct AdjacentBlocks
 {
 	public Block left, right, front, back, top, bottom;
 }
 
-public static class Map
+public sealed class Map : ScriptableObject, IUpdatable
 {
-	public const int SizeBits = 10, Size = 1 << SizeBits;
-	public const int Height = 128, SeaLevel = 50;
-	public const int WidthChunks = Size / Chunk.Size;
+	public const int XBits = 10, YBits = 7;
+	public const int Size = 1024, Height = 128;
+	public const int SeaLevel = 50;
+	public const int WidthChunks = Size / Chunk.Size, HeightChunks = Height / Chunk.Size;
 	public const int Radius = Size / 4;
 	public const int SqRadius = Radius * Radius;
 	public const float Gravity = -30.0f;
@@ -21,15 +24,66 @@ public static class Map
 	public static readonly Vector2i Center = new Vector2i(Size / 2, Size / 2);
 
 	public static int GenID { get; private set; }
-	
-	private static Block[] blocks = new Block[Height * Size * Size];
 
-	// Stores whether a chunk has been modified. If so, it will be saved to disk.
-	private static int[] modified = new int[WidthChunks * WidthChunks];
+	private static Block[] blocks = new Block[Size * Height * Size];
+	private static Chunk[] chunks = new Chunk[WidthChunks * HeightChunks * WidthChunks];
 
 	private static int numCompleted;
 	private static int total = WidthChunks * WidthChunks;
 
+	private static Queue<PreparedMeshInfo> preparedMeshes = new Queue<PreparedMeshInfo>(256);
+	private static Queue<Chunk> chunksToUpdate = new Queue<Chunk>(8);
+
+	private void Awake()
+	{
+		Updater.Register(this);
+
+		for (int y = 0; y < HeightChunks; y++)
+		{
+			for (int z = 0; z < WidthChunks; z++)
+			{
+				for (int x = 0; x < WidthChunks; x++)
+				{
+					Chunk chunk = new Chunk(x * Chunk.Size, y * Chunk.Size, z * Chunk.Size);
+					chunks[x + WidthChunks * (y + HeightChunks * z)] = chunk;
+				}
+			}
+		}
+	}
+
+	public void UpdateTick()
+	{
+		if (preparedMeshes.Count > 0)
+		{
+			PreparedMeshInfo info = preparedMeshes.Dequeue();
+
+			for (int i = 0; i < MeshDataGroup.MeshCount; i++)
+				info.chunk.SetMesh(info.group.GetMesh(i), i);
+		}
+
+		for (int c = 0; c < chunks.Length; c++)
+			chunks[c].DrawMeshes();
+	}
+
+	public static void BuildChunks()
+	{
+		List<Chunk> sortedChunks = new List<Chunk>(256);
+
+		for (int i = 0; i < chunks.Length; i++)
+			sortedChunks.Add(chunks[i]);
+
+		Vector3i playerPos = new Vector3i(Camera.main.transform.position);
+		sortedChunks.Sort((first, second) => CompareChunksByDistance(first, second, playerPos));
+
+		for (int i = 0; i < sortedChunks.Count; i++)
+			sortedChunks[i].BuildMesh(false);
+	}
+
+	private static int CompareChunksByDistance(Chunk first, Chunk second, Vector3i pos)
+	{
+		return Vector3i.DistanceSquared(first.Position, pos).CompareTo(Vector3i.DistanceSquared(second.Position, pos));
+	}
+		
 	public static void SetWorldType(int ID)
 	{
 		GenID = ID;
@@ -42,22 +96,11 @@ public static class Map
 		Perlin2D.Initialize();
 		Perlin3D.Initialize();
 		Voronoi.Initialize();
-		
-		Vector3i pos = new Vector3i();
 
-		SerializableData loadedData = MapData.LoadedData;
-
-		for (int z = 0; z < WidthChunks; z++)
+		for (int x = 0; x < WidthChunks; x++)
 		{
-			for (int x = 0; x < WidthChunks; x++)
-			{
-				pos.x = x;
-				pos.z = z;
-
-				if (loadedData != null && loadedData.modified[z * WidthChunks + x] == 1)
-					ThreadPool.QueueUserWorkItem(DecodeTerrainSection);
-				else ThreadPool.QueueUserWorkItem(GenerateTerrainSection, pos);
-			}
+			for (int z = 0; z < WidthChunks; z++)
+				ThreadPool.QueueUserWorkItem(GenerateTerrainSection, new Vector2i(x, z));
 		}
 	}
 
@@ -65,8 +108,7 @@ public static class Map
 	{
 		try
 		{
-			Vector3i pos = (Vector3i)posObj;
-
+			Vector2i pos = (Vector2i)posObj;
 			TerrainGenerator.GetGenerator(GenID).Generate(pos.x * Chunk.Size, pos.z * Chunk.Size);
 
 			numCompleted++;
@@ -76,28 +118,6 @@ public static class Map
 			Logger.Log("Error while building terrain.", e.Message, e.StackTrace);
 			Engine.SignalQuit();
 		}
-	}
-
-	private static void DecodeTerrainSection(object state)
-	{
-		#if false
-		SerializableData data = MapData.LoadedData;
-
-		int cur = 0;
-
-		for (int run = 0; run < data.countList.Count; run++)
-		{
-			for (int i = 0; i < data.countList[run]; i++)
-			{
-				ushort block = data.dataList[run];
-				Map.SetBlockDirect(cur, new Block((BlockID)(block >> 8), block));
-				cur++;
-			}
-		}
-
-		data.countList.Clear();
-		data.dataList.Clear();
-		#endif
 	}
 
 	public static float GetProgress(UnityAction callback)
@@ -118,6 +138,62 @@ public static class Map
 			callback();
 	}
 
+	public static void ProcessMeshData(PreparedMeshInfo info)
+	{
+		preparedMeshes.Enqueue(info);
+	}
+
+	public static void FlagChunkForUpdate(int x, int y, int z)
+	{
+		QueueChunkIfNecessary(ChunkFromWorld(x, y, z));
+
+		Vector3i local = ToLocalPos(x, y, z);
+
+		if (local.x == 0) QueueChunkIfNecessary(ChunkFromWorldSafe(x - 1, y, z));
+		else if (local.x == Chunk.Size - 1) QueueChunkIfNecessary(ChunkFromWorldSafe(x + 1, y, z));
+
+		if (local.y == 0) QueueChunkIfNecessary(ChunkFromWorldSafe(x, y - 1, z));
+		else if (local.y == Chunk.Size - 1) QueueChunkIfNecessary(ChunkFromWorldSafe(x, y + 1, z));
+
+		if (local.z == 0) QueueChunkIfNecessary(ChunkFromWorldSafe(x, y, z - 1));
+		else if (local.z == Chunk.Size - 1) QueueChunkIfNecessary(ChunkFromWorldSafe(x, y, z + 1));
+	}
+
+	private static void QueueChunkIfNecessary(Chunk chunk)
+	{
+		if (chunk != null && !chunk.flaggedForUpdate)
+		{
+			chunk.flaggedForUpdate = true;
+			chunksToUpdate.Enqueue(chunk);
+		}
+	}
+
+	public static void UpdateMeshes()
+	{
+		while (chunksToUpdate.Count > 0)
+			chunksToUpdate.Dequeue().BuildMesh(true);
+	}
+
+	public static Chunk GetChunk(int cX, int cY, int cZ)
+	{
+		return chunks[cZ + WidthChunks * (cY + HeightChunks * cZ)];
+	}
+
+	public static Chunk ChunkFromWorldSafe(int wX, int wY, int wZ)
+	{
+		if (!InBounds(wX, wY, wZ)) 
+			return null;
+
+		Vector3i cPos = ToChunkPos(wX, wY, wZ);
+		return GetChunk(cPos.x, cPos.y, cPos.z);
+	}
+
+	public static Chunk ChunkFromWorld(int wX, int wY, int wZ)
+	{
+		Vector3i cPos = ToChunkPos(wX, wY, wZ);
+		return GetChunk(cPos.x, cPos.y, cPos.z);
+	}
+
 	public static Block GetBlock(int x, int y, int z)
 	{
 		return blocks[x + Size * (y + Height * z)];
@@ -132,14 +208,13 @@ public static class Map
 	{
 		if (y >= Height) return new Block(BlockID.Air);
 		if (y < 0 || !InBounds(x, z)) return new Block(BlockID.Boundary);
-		
-		return blocks[x + Size * (y + Height * z)];
+
+		return GetBlock(x, y, z);
 	}
 
 	public static void SetBlockSafe(int x, int y, int z, Block block)
 	{
-		if (InBounds(x, y, z))
-			blocks[x + Size * (y + Height * z)] = block;
+		if (InBounds(x, y, z)) SetBlock(x, y, z, block);
 	}
 
 	public static void SetBlockAdvanced(int x, int y, int z, Block block, Vector3i normal, bool undo)
@@ -164,12 +239,11 @@ public static class Map
 			if (undo) UndoManager.RegisterAction(prevInst, newBlock);
 
 			SetBlock(x, y, z, block);
-			modified[ChunkManager.ToChunkZ(z) * WidthChunks + ChunkManager.ToChunkX(x)] = 1;
 			
 			MapLight.RecomputeLighting(x, y, z);
 		
-			ChunkManager.FlagChunkForUpdate(x, z);
-			ChunkManager.UpdateMeshes();
+			FlagChunkForUpdate(x, y, z);
+			UpdateMeshes();
 		}
 	}
 
@@ -202,13 +276,12 @@ public static class Map
 			if (undo) prevBlocks.Add(new BlockInstance(GetBlock(x, y, z), x, y, z));
 			
 			SetBlock(x, y, z, blocks[i].block);
-			modified[ChunkManager.ToChunkZ(z) * WidthChunks + ChunkManager.ToChunkX(x)] = 1;
 			
 			MapLight.RecomputeLighting(x, y, z);
-			ChunkManager.FlagChunkForUpdate(x, z);
+			FlagChunkForUpdate(x, y, z);
 		}
 
-		ChunkManager.UpdateMeshes();
+		UpdateMeshes();
 		
 		if (undo) UndoManager.RegisterAction(prevBlocks, blocks);
 	}
@@ -226,7 +299,7 @@ public static class Map
 
 		return blocks;
 	}
-
+		
 	public static int GetSurface(int x, int z)
 	{
 		for (int y = Map.Height - 1; y >= 0; y--)
@@ -250,56 +323,127 @@ public static class Map
 		return x >= 0 && z >= 0 && x < Size && z < Size;
 	}
 
-	public static void Encode(SerializableData data) 
+	public static void Encode() 
 	{ 
-		data.modified = modified;
+		StreamWriter file = new StreamWriter(Engine.Path + "ChunkData.txt");
+
+		int sectionSize = blocks.Length / 4096;
+		Assert.IsTrue(sectionSize < ushort.MaxValue, "Section size is too large!");
+
+		for (int i = 0; i < blocks.Length; i += sectionSize)
+			EncodeSection(i, sectionSize, file);
+		
+		file.Flush();
+		file.Close();
+	}
+
+	private static void EncodeSection(int start, int length, StreamWriter file)
+	{
+		StringWriter writer = new StringWriter();
 
 		int i = 0;
-		int runCount = 0;
-		Block currentBlock = new Block(BlockID.Air);
 
-		for (int cZ = 0; cZ < modified.GetLength(1); cZ++)
+		ushort currentCount = 0;
+		ushort currentData = 0;
+
+		for (i = start; i < start + length; i++) 
 		{
-			for (int cX = 0; cX < modified.GetLength(0); cX++)
+			ushort thisData = (ushort)((byte)blocks[i].ID << 8 | blocks[i].data);
+
+			if (thisData != currentData) 
 			{
-				if (modified[cZ * WidthChunks + cX] != 1) continue;
-
-				Vector2i wPos = new Vector2i(cX * Chunk.Size, cZ * Chunk.Size);
-
-				for (int y = 0; y < Height; y++)
+				if (i != 0) 
 				{
-					for (int z = wPos.z; z < wPos.z + Chunk.Size; z++)
-					{
-						for (int x = wPos.x; x < wPos.x + Chunk.Size; x++) 
-						{
-							Block nextBlock = GetBlock(x, y, z);
+					writer.Write((char)currentCount);
+					writer.Write((char)currentData);
+				}
 
-							if (nextBlock.ID != currentBlock.ID || nextBlock.data != currentBlock.data) 
-							{
-								if (i != 0) 
-								{
-									data.countList.Add(runCount);
-									data.dataList.Add((ushort)((byte)currentBlock.ID << 8 | currentBlock.data));
-								}
+				currentCount = 1;
+				currentData = thisData;
+			}
+			else currentCount ++;
 
-								runCount = 1;
-								currentBlock = nextBlock;
-							}
-							else
-								runCount++;
+			if (i == length - 1) 
+			{
+				writer.Write((char)currentCount);
+				writer.Write((char)currentData);
+			}
+		}
 
-							if (i == blocks.Length - 1) 
-							{
-								data.countList.Add(runCount);
-								data.dataList.Add((ushort)((byte)currentBlock.ID << 8 | currentBlock.data));
-							}
+		string compressedData = writer.ToString();
+		writer.Flush();
+		writer.Close();
 
-							i++;
-						}
-					}
+		file.Write(compressedData);
+		file.Write((char)ushort.MaxValue);
+	}
+
+	public static bool Decode()
+	{
+		string path = Engine.Path + "ChunkData.txt";
+
+		if (File.Exists(path))
+		{
+			StreamReader reader = new StreamReader(path);
+			string[] chunkData = reader.ReadToEnd().Split((char)ushort.MaxValue);
+			reader.Close();
+
+			int sectionSize = blocks.Length / 4096;
+
+			for (int i = 0; i < blocks.Length; i += sectionSize)
+			{
+				if (!DecodeSection(i, sectionSize, chunkData[i]))
+					return false;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private static bool DecodeSection(int start, int length, string data)
+	{
+		StringReader reader = new StringReader(data);
+
+		int i = start;
+
+		try 
+		{
+			while (i < length ) 
+			{
+				ushort currentCount = (ushort)reader.Read();
+				ushort currentData = (ushort)reader.Read();
+
+				int j = 0;
+
+				while (j < currentCount) 
+				{
+					blocks[i] = new Block((BlockID)(currentData >> 8), currentData);
+					j ++;
+					i ++;
 				}
 			}
 		}
+		catch (System.Exception) 
+		{
+			Logger.LogError("Map data is corrupt. Generating a new map.");
+			reader.Close();
+			return false;
+		}
+
+		reader.Close();
+		return true;
+	}
+
+	public static Vector3i ToChunkPos(int x, int y, int z)
+	{
+		return new Vector3i(x >> Chunk.SizeBits, y >> Chunk.SizeBits, z >> Chunk.SizeBits);
+	}
+
+	public static Vector3i ToLocalPos(int x, int y, int z)
+	{
+		return new Vector3i(x & (Chunk.Size - 1), y & (Chunk.Size - 1), z & (Chunk.Size - 1));
 	}
 }
 	

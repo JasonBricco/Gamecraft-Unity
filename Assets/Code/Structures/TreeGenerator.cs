@@ -31,7 +31,7 @@ public sealed class TreeGenerator : StructureGenerator
 
 	public static void BoxyTreeTerrain(int x, int y, int z)
 	{
-		if (Map.GetBlockSafe(x, y, z).ID != BlockID.Grass || Map.GetBlockSafe(x, y + 1, z).IsFluid())
+		if (Map.GetBlock(x, y, z).ID != BlockID.Grass || Map.GetBlock(x, y + 1, z).IsFluid())
 			return;
 
 		for (int i = -5; i <= 5; i++)

@@ -159,12 +159,12 @@ public sealed class FluidSimulator : ScriptableObject, IUpdatable
 		{
 			BlockInstance b = blocksToFlow[i];
 			MapLight.RecomputeLighting(b.x, b.y, b.z);
-			ChunkManager.FlagChunkForUpdate(b.x, b.z);
+			Map.FlagChunkForUpdate(b.x, b.y, b.z);
 
 			flowQueue.Enqueue(blocksToFlow[i]);
 		}
 
-		ChunkManager.UpdateMeshes();
+		Map.UpdateMeshes();
 		blocksToFlow = new List<BlockInstance>(128);
 	}
 		
@@ -174,12 +174,12 @@ public sealed class FluidSimulator : ScriptableObject, IUpdatable
 		{
 			BlockInstance b = blocksToUnflow[i];
 			MapLight.RecomputeLighting(b.x, b.y, b.z);
-			ChunkManager.FlagChunkForUpdate(b.x, b.z);
+			Map.FlagChunkForUpdate(b.x, b.y, b.z);
 
 			unflowQueue.Enqueue(blocksToUnflow[i]);
 		}
 
-		ChunkManager.UpdateMeshes();
+		Map.UpdateMeshes();
 		blocksToUnflow = new List<BlockInstance>(128);
 	}
 }

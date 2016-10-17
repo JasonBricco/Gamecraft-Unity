@@ -40,42 +40,45 @@ public sealed class UIManager : MonoBehaviour
 		blockWindow.SetActive(false);
 		mainMenuWindow.SetActive(true);
 
-		Events.OnStateChange += (state) => 
+		Events.OnStateChange += StateChangeHandler;
+		Events.OnGameEvent += GameEventHandler; 
+	}
+
+	private void GameEventHandler(GameEventType type)
+	{
+		switch (type)
 		{
-			if (state == GameState.Paused || state == GameState.MainMenu)
-				cursor.SetActive(false);
-			
-			if (state == GameState.Playing)
-			{
-				DisableActiveWindows();
-				cursor.SetActive(true);
-			}
-		};
+		case GameEventType.BeginPlay:
+			loadingWindow.SetActive(false);
+			break;
 
-		Events.OnGameEvent += (type) => 
+		case GameEventType.GeneratingIsland:
+			worldTypesWindow.SetActive(false);
+			mainMenuWindow.SetActive(false);
+			generationWindow.SetActive(true);
+			break;
+
+		case GameEventType.GenerateLight:
+			generationWindow.SetActive(false);
+			loadingWindow.SetActive(true);
+			break;
+
+		case GameEventType.EnteringCommand:
+			commandsWindow.SetActive(true);
+			break;
+		}
+	}
+
+	private void StateChangeHandler(GameState state)
+	{
+		if (state == GameState.Paused || state == GameState.MainMenu)
+			cursor.SetActive(false);
+
+		if (state == GameState.Playing)
 		{
-			switch (type)
-			{
-			case GameEventType.BeginPlay:
-				loadingWindow.SetActive(false);
-				break;
-
-			case GameEventType.GeneratingIsland:
-				worldTypesWindow.SetActive(false);
-				generationWindow.SetActive(true);
-				break;
-
-			case GameEventType.GenerateLight:
-				mainMenuWindow.SetActive(false);
-				generationWindow.SetActive(false);
-				loadingWindow.SetActive(true);
-				break;
-
-			case GameEventType.EnteringCommand:
-				commandsWindow.SetActive(true);
-				break;
-			}
-		};
+			DisableActiveWindows();
+			cursor.SetActive(true);
+		}
 	}
 
 	private void Update()

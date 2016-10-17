@@ -58,7 +58,7 @@ public sealed class MapLight
 	{
 		Events.SendGameEvent(GameEventType.BeginPlay);
 		Engine.ChangeState(GameState.Playing);
-		ChunkManager.BuildChunks();
+		Map.BuildChunks();
 	}
 
 	public static void RecomputeLighting(int x, int y, int z)

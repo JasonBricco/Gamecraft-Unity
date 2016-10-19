@@ -124,8 +124,15 @@ public sealed class Map : ScriptableObject, IUpdatable
 	{
 		float percent = (float)numCompleted / total;
 
-		if (numCompleted == total) 
+		Logger.Print("Num Completed: " + numCompleted);
+		Logger.Print("Total: " + total);
+
+		if (numCompleted == total)
+		{
+			Logger.Print("They match, onward!");
 			callback();
+		}
+		else Logger.Print("They don't match.");
 
 		TryForceComplete(callback);
 		return percent;
@@ -389,11 +396,14 @@ public sealed class Map : ScriptableObject, IUpdatable
 			reader.Close();
 
 			int sectionSize = blocks.Length / 4096;
+			int data = 0;
 
 			for (int i = 0; i < blocks.Length; i += sectionSize)
 			{
-				if (!DecodeSection(i, sectionSize, chunkData[i]))
+				if (!DecodeSection(i, sectionSize, chunkData[data]))
 					return false;
+
+				data++;
 			}
 
 			return true;

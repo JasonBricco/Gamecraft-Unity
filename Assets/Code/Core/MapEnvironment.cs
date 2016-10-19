@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 
-public sealed class Environment : MonoBehaviour 
+public sealed class MapEnvironment : MonoBehaviour 
 {
 	private const int SecondsPerMinute = 60;
 

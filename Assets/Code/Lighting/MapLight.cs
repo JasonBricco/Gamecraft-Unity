@@ -28,7 +28,7 @@ public sealed class MapLight
 				pos.x = x;
 				pos.z = z;
 				
-				ThreadPool.QueueUserWorkItem(GenerateLightSection, pos);
+				ThreadManager.QueueWork(GenerateLightSection, pos, false);
 			}
 		}
 	}

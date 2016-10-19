@@ -37,7 +37,7 @@ public sealed class MapInteraction : MonoBehaviour, IUpdatable
 		new WallGenerator()
 	};
 	
-	private delegate void Add();
+	private delegate void Add(HitInfo hit);
 	private Add currentAdd;
 	
 	private Block selectedBlock = new Block(BlockID.Grass);
@@ -74,14 +74,16 @@ public sealed class MapInteraction : MonoBehaviour, IUpdatable
 	{
 		if (Engine.CurrentState != GameState.Playing) return;
 
+		HitInfo info = GetHit();
+
 		if (Input.GetMouseButtonUp(0))
-			currentAdd();
+			currentAdd(info);
 
 		if (Input.GetMouseButtonUp(1))
-			DeleteBlock();
+			DeleteBlock(info);
 
 		if (Input.GetKeyDown(KeyCode.Q))
-			PickBlock();
+			PickBlock(info);
 
 		if (Input.GetKeyDown(KeyCode.Z))
 			UndoManager.Undo();
@@ -95,17 +97,14 @@ public sealed class MapInteraction : MonoBehaviour, IUpdatable
 			return;
 		}
 		
-		HitInfo info = GetHit();
-		
 		if (info.hit)
 		{
 			Vector3i pos = info.hitPos;
-			currentBlock = new BlockInstance(Map.GetBlock(pos.x, pos.y, pos.z), pos.x, pos.y, pos.z);
+			currentBlock = new BlockInstance(Map.GetBlockSafe(pos.x, pos.y, pos.z), pos.x, pos.y, pos.z);
 			EnableReticle();
 			reticle.position = info.hitPos;
 		}
-		else
-			DisableReticle();
+		else DisableReticle();
 	}
 	
 	public void BlockSelected(int ID)
@@ -160,10 +159,8 @@ public sealed class MapInteraction : MonoBehaviour, IUpdatable
 			reticleRenderer.enabled = false;
 	}
 	
-	private void PickBlock()
+	private void PickBlock(HitInfo info)
 	{
-		HitInfo info = GetHit();
-
 		if (info.hit)
 		{
 			Vector3i setPos = info.hitPos;
@@ -174,11 +171,9 @@ public sealed class MapInteraction : MonoBehaviour, IUpdatable
 		}
 	}
 	
-	private void AddBlock()
+	private void AddBlock(HitInfo info)
 	{
 		if (EventSystem.current.IsPointerOverGameObject()) return;
-
-		HitInfo info = GetHit();
 
 		if (info.hit)
 		{
@@ -187,25 +182,20 @@ public sealed class MapInteraction : MonoBehaviour, IUpdatable
 
 			bool empty = Utils.ValidatePlacement(setPos);
 
-			if (empty)
-				Map.SetBlockAdvanced(setPos.x, setPos.y, setPos.z, selectedBlock, info.normal, true);
+			if (empty) Map.SetBlockAdvanced(setPos.x, setPos.y, setPos.z, selectedBlock, info.normal, true);
 		}
 	}
 	
-	private void AddStructure()
+	private void AddStructure(HitInfo info)
 	{
 		if (EventSystem.current.IsPointerOverGameObject()) return;
-
-		HitInfo info = GetHit();
 
 		if (info.hit)
 			structures[structureID].Generate(info);
 	}
 	
-	private void DeleteBlock()
-	{
-		HitInfo info = GetHit();
-		
+	private void DeleteBlock(HitInfo info)
+	{		
 		if (info.hit)
 		{
 			Vector3i setPos = info.hitPos;

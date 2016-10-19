@@ -3,14 +3,27 @@ using System;
 using System.IO;
 using System.Text;
 
-public sealed class Logger : ScriptableObject
+public sealed class Logger : ScriptableObject, IUpdatable
 {
 	private static string dataPath;
+	private static bool allowPrinting = true;
 
 	private void Awake()
 	{
 		dataPath = Application.persistentDataPath;
 		Application.logMessageReceived += HandleError;
+
+		if (Debug.isDebugBuild)
+			Updater.Register(this);
+	}
+
+	public void UpdateTick()
+	{
+		if (Input.GetKeyDown(KeyCode.Tab))
+		{
+			allowPrinting = !allowPrinting;
+			Debug.Log("Printing Enabled: " + allowPrinting);
+		}
 	}
 
 	private void HandleError(string logString, string stackTrace, LogType type)
@@ -32,16 +45,15 @@ public sealed class Logger : ScriptableObject
 		File.AppendAllText(dataPath + "/Log.txt", text.ToString() + System.Environment.NewLine);
 	}
 
-	public static void LogWarning(params string[] items)
-	{
-		Debug.LogWarning(items[0]);
-		Log(items);
-	}
-
 	public static void LogError(params string[] items)
 	{
 		Debug.LogError(items[0]);
-		Log(items);
+	}
+
+	[System.Diagnostics.Conditional("DEBUG")]
+	public static void Print(string message)
+	{
+		if (allowPrinting) Debug.Log(message);
 	}
 
 	public static void VerifyCollection(Array collection, string name)
@@ -49,7 +61,7 @@ public sealed class Logger : ScriptableObject
 		for (int i = 0; i < collection.Length; i++)
 		{
 			if (collection.GetValue(i) == null)
-				Debug.LogError("Element " + i + " in the collection " + name + " is null!");
+				LogError("Element " + i + " in the collection " + name + " is null!");
 		}
 	}
 }

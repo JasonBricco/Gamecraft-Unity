@@ -5311,7 +5311,7 @@ MonoBehaviour:
         m_MethodName: SetDayButtonHandler
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1786599016}
+          m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: Environment, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -7226,7 +7226,7 @@ MonoBehaviour:
         m_MethodName: SetNightButtonHandler
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1786599016}
+          m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: Environment, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -8821,12 +8821,6 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1770809066}
---- !u!114 &1786599016 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114000011038193734, guid: f47a6e64c1e1f4a30ac8b10700a9b5d8,
-    type: 2}
-  m_PrefabInternal: {fileID: 1835588703}
-  m_Script: {fileID: 11500000, guid: 6f86fbca5633d4a65889e682cb0e0a5d, type: 3}
 --- !u!1 &1818931516
 GameObject:
   m_ObjectHideFlags: 0
@@ -9017,7 +9011,8 @@ Prefab:
       propertyPath: EmissionModule.rate.scalar
       value: 2000
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 114000011038193734, guid: f47a6e64c1e1f4a30ac8b10700a9b5d8, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: f47a6e64c1e1f4a30ac8b10700a9b5d8, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1844067328
@@ -9384,7 +9379,7 @@ MonoBehaviour:
         m_MethodName: StopTimeButtonHandler
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1786599016}
+          m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: Environment, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -9519,6 +9514,21 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1885299140}
+--- !u!1 &1923256204 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 152124, guid: f47a6e64c1e1f4a30ac8b10700a9b5d8, type: 2}
+  m_PrefabInternal: {fileID: 1835588703}
+--- !u!114 &1923256205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1923256204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ff622f52423d4eb78f87e6f3485fc6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1928662254
 GameObject:
   m_ObjectHideFlags: 0
@@ -9806,7 +9816,7 @@ MonoBehaviour:
         m_MethodName: ToggleRainButtonHandler
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1786599016}
+          m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: Environment, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0

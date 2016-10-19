@@ -225,7 +225,6 @@ public sealed class Player : Entity, IUpdatable
 	{		
 		if (MapData.LoadedData != null)
 		{
-			Debug.Log("Ran here. Which is bad, it should not have.");
 			transform.position = MapData.LoadedData.playerPos;
 			return;
 		}

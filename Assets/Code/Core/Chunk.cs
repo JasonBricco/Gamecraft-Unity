@@ -16,7 +16,7 @@ public struct PreparedMeshInfo
 public sealed class Chunk
 {
 	public const int SizeBits = 5;
-	public const int Size = 1 << SizeBits;
+	public const int Size = 32;
 
 	// Chunk position in world coordinates.
 	public Vector3i Position { get; private set; }
@@ -36,14 +36,14 @@ public sealed class Chunk
 			meshes[i] = new Mesh();
 	}
 
-	public void BuildMesh(bool priority)
+	public void BuildMeshAsync(bool priority)
 	{
 		flaggedForUpdate = false;
-		ThreadManager.QueueWork(BuildMeshAsync, priority);
+		ThreadManager.QueueWork(BuildMesh, null, priority);
 	}
 
-	private void BuildMeshAsync(object data)
-	{	
+	public void BuildMesh(object data)
+	{
 		try
 		{
 			MeshDataGroup group = new MeshDataGroup();

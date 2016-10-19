@@ -148,17 +148,17 @@ public sealed class UIManager : MonoBehaviour
 		data.interactionClass.StructureSelected(data.blockID);
 	}
 
-	public void SetDayButtonHandler(Environment env)
+	public void SetDayButtonHandler(MapEnvironment env)
 	{
 		env.SetDay();
 	}
 
-	public void SetNightButtonHandler(Environment env)
+	public void SetNightButtonHandler(MapEnvironment env)
 	{
 		env.SetNight();
 	}
 
-	public void StopTimeButtonHandler(Environment env)
+	public void StopTimeButtonHandler(MapEnvironment env)
 	{
 		env.StopTime();
 	}
@@ -168,7 +168,7 @@ public sealed class UIManager : MonoBehaviour
 		buttonText.text = buttonText.text == "Stop Time" ? "Start Time" : "Stop Time";
 	}
 
-	public void ToggleRainButtonHandler(Environment env)
+	public void ToggleRainButtonHandler(MapEnvironment env)
 	{
 		env.ToggleRain();
 	}

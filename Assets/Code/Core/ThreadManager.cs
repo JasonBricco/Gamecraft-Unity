@@ -1,29 +1,27 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using System.Collections.Generic;
-using System.Threading;
+using System;
 
 public delegate void ThreadWork(object data);
 
 public sealed class ThreadManager : ScriptableObject, IUpdatable 
 {
-	private static Thread worker;
-
-	private static AutoResetEvent handle = new AutoResetEvent(false);
-
-	private static Queue<ThreadWork> work = new Queue<ThreadWork>(512);
-	private static Queue<ThreadWork> priority = new Queue<ThreadWork>(512);
 	private static Queue<UnityAction> mainThreadWork = new Queue<UnityAction>();
+	private static WorkerThread[] threads;
 
-	private static bool runThread = true;
+	private static int next = 0;
 
 	public void Awake()
 	{
 		Updater.Register(this);
 
-		ThreadStart start = new ThreadStart(WorkMonitor);
-		worker = new Thread(start);
-		worker.Start();
+		threads = new WorkerThread[Environment.ProcessorCount];
+
+		Logger.Print("Creating " + threads.Length + " threads.");
+
+		for (int i = 0; i < threads.Length; i++)
+			threads[i] = new WorkerThread();
 	}
 
 	public void UpdateTick()
@@ -31,16 +29,14 @@ public sealed class ThreadManager : ScriptableObject, IUpdatable
 		if (mainThreadWork.Count > 0)
 			mainThreadWork.Dequeue().Invoke();
 
-		if (work.Count > 0 || priority.Count > 0)
-			handle.Set();
+		for (int i = 0; i < threads.Length; i++)
+			threads[i].TrySetHandle();
 	}
 
-	public static void QueueWork(ThreadWork task, bool isPriority)
+	public static void QueueWork(ThreadWork task, object arg, bool isPriority)
 	{
-		if (!isPriority)
-			work.Enqueue(task);
-		else 
-			priority.Enqueue(task);
+		next = (next + 1) % threads.Length;
+		threads[next].QueueWork(task, arg, isPriority);
 	}
 
 	public static void QueueForMainThread(UnityAction method)
@@ -48,27 +44,9 @@ public sealed class ThreadManager : ScriptableObject, IUpdatable
 		mainThreadWork.Enqueue(method);
 	}
 
-	private static void WorkMonitor()
-	{
-		while (runThread)
-		{
-			while (work.Count > 0 || priority.Count > 0)
-			{
-				if (!runThread) break;
-
-				if (priority.Count > 0)
-					priority.Dequeue().Invoke(null);
-
-				if (work.Count > 0)
-					work.Dequeue().Invoke(null);
-			}
-
-			handle.WaitOne();
-		}
-	}
-
 	private void OnDestroy()
 	{
-		runThread = false;
+		for (int i = 0; i < threads.Length; i++)
+			threads[i].Stop();
 	}
 }

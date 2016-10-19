@@ -53,7 +53,7 @@ public sealed class Map : ScriptableObject, IUpdatable
 
 	public void UpdateTick()
 	{
-		if (preparedMeshes.Count > 0)
+		while (preparedMeshes.Count > 0)
 		{
 			PreparedMeshInfo info = preparedMeshes.Dequeue();
 
@@ -76,7 +76,7 @@ public sealed class Map : ScriptableObject, IUpdatable
 		sortedChunks.Sort((first, second) => CompareChunksByDistance(first, second, playerPos));
 
 		for (int i = 0; i < sortedChunks.Count; i++)
-			sortedChunks[i].BuildMesh(false);
+			sortedChunks[i].BuildMeshAsync(false);
 	}
 
 	private static int CompareChunksByDistance(Chunk first, Chunk second, Vector3i pos)
@@ -100,7 +100,7 @@ public sealed class Map : ScriptableObject, IUpdatable
 		for (int x = 0; x < WidthChunks; x++)
 		{
 			for (int z = 0; z < WidthChunks; z++)
-				ThreadPool.QueueUserWorkItem(GenerateTerrainSection, new Vector2i(x, z));
+				ThreadManager.QueueWork(GenerateTerrainSection, new Vector2i(x, z), false);
 		}
 	}
 
@@ -171,12 +171,12 @@ public sealed class Map : ScriptableObject, IUpdatable
 	public static void UpdateMeshes()
 	{
 		while (chunksToUpdate.Count > 0)
-			chunksToUpdate.Dequeue().BuildMesh(true);
+			chunksToUpdate.Dequeue().BuildMeshAsync(true);
 	}
 
 	public static Chunk GetChunk(int cX, int cY, int cZ)
 	{
-		return chunks[cZ + WidthChunks * (cY + HeightChunks * cZ)];
+		return chunks[cX + WidthChunks * (cY + HeightChunks * cZ)];
 	}
 
 	public static Chunk ChunkFromWorldSafe(int wX, int wY, int wZ)
